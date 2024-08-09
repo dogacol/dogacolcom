@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Academic Papers - Doğa Çöl</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="images\website images\favicon.ico" type="image/x-icon">
+    <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
     <style>
         body {
             font-family: 'Cormorant Garamond', serif;
@@ -25,7 +25,7 @@
             margin-bottom: 20px;
         }
         .file-link {
-            font-size: 1.2em; /* Slightly larger for better readability */
+            font-size: 1.3em; /* Slightly larger for better readability */
             margin: 10px 0;
             cursor: pointer;
             color: #333;
@@ -35,15 +35,23 @@
             color: #000;
         }
         .file-content {
-            font-size: 1em; /* Scales with screen size */
+            font-size: 1.2em; /* Scales with screen size */
             color: #333;
             background-color: #fff;
             padding: 10px; /* Reduce padding for smaller screens */
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+            margin: 20px auto; /* Narrow the margins and center the container */
+            width: 60%; /* Make the container narrower relative to the window size */
+            max-width: 800px; /* Optional: Limit the maximum width */
             display: none; /* Initially hidden */
+            line-height: 1.5; /* Ensures 1.5 line spacing */
         }
+
+        .file-content p {
+            text-align: justify; /* Justifies the text in paragraph elements */
+        }
+
         .footer {
             font-size: 0.9em; /* Slightly smaller to fit better on small screens */
             color: #000000;
@@ -52,6 +60,23 @@
             background-color: #f0f0f0;
             margin-top: 50px;
         }
+        .back-button {
+            margin-bottom: 20px; /* Add space below the button */
+            text-align: center; /* Align the button to the left */
+        }
+        .back-button button {
+            background-color: #333; /* Dark background color */
+            color: #fff; /* White text color */
+            padding: 10px 20px; /* Add padding */
+            font-size: 1em; /* Adjust font size */
+            border: none;
+            border-radius: 5px; /* Slightly rounded corners */
+            cursor: pointer;
+            text-align: center;
+        }
+        .back-button button:hover {
+            background-color: #555; /* Slightly lighter on hover */
+        }
     </style>
 </head>
 <body>
@@ -59,6 +84,9 @@
         <h1>Academic Papers</h1>
         <div id="files"></div>
         <div id="file-content" class="file-content"></div>
+    </div>
+    <div class="back-button">
+        <button onclick="goToIndex()">&#8592; Back</button>
     </div>
 
     <div class="footer">
@@ -70,9 +98,9 @@
         const filesContainer = document.getElementById('files');
         const fileContentDiv = document.getElementById('file-content');
         const repoUrl = "https://api.github.com/repos/dogacol/Academic-Papers/contents";
-
+    
         let fileCounter = 1; // Initialize the counter
-
+    
         // Fetch list of files from the GitHub repository
         fetch(repoUrl)
             .then(response => response.json())
@@ -85,35 +113,42 @@
                         fileLink.textContent = `${fileCounter}. ${file.name.replace(/-/g, ' ').replace('.md', '')}`; // Temporary name until the title is fetched
                         fileLink.onclick = () => loadFileContent(file.name);
                         filesContainer.appendChild(fileLink);
-
+    
                         // Fetch the file content to extract the title
                         fetchFileTitle(file.name, fileCounter);
-
+    
                         fileCounter++; // Increment the counter for the next file
                     }
                 });
             })
             .catch(error => console.error('Error fetching file list:', error));
-
-        // Function to load and display the content of a .md file
+    
+        // Function to load and display the content of a .md file, or hide it if already open
         function loadFileContent(fileName) {
             const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
-
-            fetch(fileUrl)
-                .then(response => response.text())
-                .then(markdown => {
-                    const converter = new showdown.Converter();
-                    const htmlContent = converter.makeHtml(markdown);
-                    fileContentDiv.innerHTML = htmlContent;
-                    fileContentDiv.style.display = 'block'; // Show the content
-                })
-                .catch(error => console.error('Error fetching file content:', error));
+    
+            // If the content is already visible, hide it
+            if (fileContentDiv.dataset.currentFile === fileName) {
+                fileContentDiv.style.display = 'none';
+                fileContentDiv.dataset.currentFile = ''; // Reset current file
+            } else {
+                fetch(fileUrl)
+                    .then(response => response.text())
+                    .then(markdown => {
+                        const converter = new showdown.Converter();
+                        const htmlContent = converter.makeHtml(markdown);
+                        fileContentDiv.innerHTML = htmlContent;
+                        fileContentDiv.style.display = 'block'; // Show the content
+                        fileContentDiv.dataset.currentFile = fileName; // Store the current file
+                    })
+                    .catch(error => console.error('Error fetching file content:', error));
+            }
         }
-
+    
         // Function to fetch and extract the title from a .md file
         function fetchFileTitle(fileName, fileCounter) {
             const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
-
+    
             fetch(fileUrl)
                 .then(response => response.text())
                 .then(markdown => {
@@ -123,6 +158,11 @@
                 })
                 .catch(error => console.error('Error fetching file title:', error));
         }
+
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
     </script>
+    
 </body>
 </html>
