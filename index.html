@@ -4,12 +4,21 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="Content-Style-Type" content="text/css">
   <title>Doga Col</title>
+  <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400;700&display=swap" rel="stylesheet">
   <style type="text/css">
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
     body {
+      display: flex;
+      flex-direction: column;
       background-color: #f0f0f0;
-      font-family: "Courier New", Courier, monospace;
+      font-family: 'Grenze Gotisch', serif;
     }
     .content {
+      flex: 1;
       max-width: 750px;
       margin: auto;
       text-align: center;
@@ -19,17 +28,32 @@
       color: #000000;
     }
     .subtitle {
+      margin-top: -40px;
+      font-size: 15px;
+      color: #000000;
+    }
+    h1 {
+      margin-bottom: 1px !important; /* Force this rule to apply */
       font-size: 25px;
       color: #000000;
     }
     .links {
-      margin: 20px 0;
+      margin: 5px 0 10px 0; /* Adjust this value for top spacing */
     }
     .links a {
       font-size: 20px;
-      color: #0000e3;
+      color: #000000;
       text-decoration: none;
-      margin: 0 10px;
+      margin: 0 5px;
+      position: relative;
+    }
+    .links a::after {
+      content: "/";
+      position: absolute;
+      right: -10px; /* Adjust spacing between the link and the slash */
+    }
+    .links a:last-child::after {
+      content: ""; /* Remove the slash after the last link */
     }
     .links a:hover {
       text-decoration: underline;
@@ -38,9 +62,11 @@
       margin-top: 30px;
     }
     .footer {
-      margin-top: 50px;
       font-size: 14px;
       color: #000000;
+      text-align: center;
+      padding: 10px 0;
+      background-color: #f0f0f0;
     }
   </style>
 </head>
@@ -49,26 +75,27 @@
     <p class="title">Doğa Çöl</p>
     <p class="subtitle">I like words, images, and sounds</p>
     
+    <h1>Words</h1>
     <div class="links">
-      <a href="https://yourwebsite.com/academic-writing" target="_blank">Academic Writing</a>
-      <a href="https://yourwebsite.com/lectures" target="_blank">Lectures</a>
-      <a href="https://yourwebsite.com/substack" target="_blank">Substack</a>
+      <a href="https://github.com/dogacol/Academic-Papersg" target="_blank">Academic Writing</a>
+      <a href="https://github.com/dogacol/Lectures" target="_blank">Lectures</a>
+      <a href="https://dogacol.substack.com" target="_blank">Substack</a>
       <a href="https://yourwebsite.com/personal-links" target="_blank">Personal Links</a>
       <a href="https://yourwebsite.com/contact" target="_blank">Contact</a>
     </div>
     
     <div class="personal-links">
-      <p class="subtitle">Personal Links</p>
+      <h1>Images and Sounds</h1>
       <div class="links">
         <a href="https://dogacol.bandcamp.com" target="_blank">Bandcamp</a>
         <a href="https://vimeo.com/dogacol" target="_blank">Vimeo</a>
         <a href="https://soundcloud.com/dogacol" target="_blank">Soundcloud</a>
       </div>
     </div>
-
-    <div class="footer">
-      &copy; 2024 Doğa Çöl
-    </div>
+  </div>
+  
+  <div class="footer">
+    &copy; 2024 Doğa Çöl
   </div>
 </body>
 </html>
