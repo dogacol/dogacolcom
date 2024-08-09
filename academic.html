@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Academic Papers - Doğa Çöl</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -11,18 +11,20 @@
             background-color: #f0f0f0;
             text-align: center;
             padding: 20px;
+            margin: 0;
+            line-height: 1.5;
         }
         .content {
-            max-width: 750px;
-            margin: auto;
+            max-width: 100%; /* Allow the content to fill the screen */
+            padding: 10px; /* Reduce padding for smaller screens */
             text-align: left;
         }
         h1 {
-            font-size: 40px;
-            margin-bottom: 30px;
+            font-size: 1.5em; /* Scales with screen size */
+            margin-bottom: 20px;
         }
         .file-link {
-            font-size: 20px;
+            font-size: 1.2em; /* Slightly larger for better readability */
             margin: 10px 0;
             cursor: pointer;
             color: #333;
@@ -32,17 +34,17 @@
             color: #000;
         }
         .file-content {
-            font-size: 18px;
+            font-size: 1em; /* Scales with screen size */
             color: #333;
             background-color: #fff;
-            padding: 15px;
+            padding: 10px; /* Reduce padding for smaller screens */
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
             display: none; /* Initially hidden */
         }
         .footer {
-            font-size: 14px;
+            font-size: 0.9em; /* Slightly smaller to fit better on small screens */
             color: #000000;
             text-align: center;
             padding: 10px 0;
