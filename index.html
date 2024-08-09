@@ -18,48 +18,42 @@
       font-family: 'Grenze Gotisch', serif;
     }
     .content {
-      flex: 1;
       max-width: 750px;
       margin: auto;
-      text-align: center;
+      padding: 20px;
+      text-align: center; /* Center the title and subtitle */
     }
     .title {
       font-size: 40px;
       color: #000000;
     }
     .subtitle {
-      margin-top: -40px;
       font-size: 15px;
       color: #000000;
+      margin-top: -20px;
+      margin-bottom: 40px;
     }
-    h1 {
-      margin-bottom: 1px !important; /* Force this rule to apply */
+    .section {
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .section h1 {
       font-size: 25px;
       color: #000000;
+      margin-left: 0;
     }
     .links {
-      margin: 5px 0 10px 0; /* Adjust this value for top spacing */
+      margin-left: 20px; /* Indent the links */
     }
     .links a {
+      display: block;
       font-size: 20px;
       color: #000000;
       text-decoration: none;
-      margin: 0 5px;
-      position: relative;
-    }
-    .links a::after {
-      content: "/";
-      position: absolute;
-      right: -10px; /* Adjust spacing between the link and the slash */
-    }
-    .links a:last-child::after {
-      content: ""; /* Remove the slash after the last link */
+      margin: 5px 0;
     }
     .links a:hover {
       text-decoration: underline;
-    }
-    .personal-links, .contact {
-      margin-top: 30px;
     }
     .footer {
       font-size: 14px;
@@ -67,6 +61,7 @@
       text-align: center;
       padding: 10px 0;
       background-color: #f0f0f0;
+      margin-top: auto;
     }
   </style>
 </head>
@@ -75,16 +70,18 @@
     <p class="title">Doğa Çöl</p>
     <p class="subtitle">I like words, images, and sounds</p>
     
-    <h1>Words</h1>
-    <div class="links">
-      <a href="https://github.com/dogacol/Academic-Papersg" target="_blank">Academic Writing</a>
-      <a href="https://github.com/dogacol/Lectures" target="_blank">Lectures</a>
-      <a href="https://dogacol.substack.com" target="_blank">Substack</a>
-      <a href="https://yourwebsite.com/personal-links" target="_blank">Personal Links</a>
-      <a href="https://yourwebsite.com/contact" target="_blank">Contact</a>
+    <div class="section">
+      <h1>Words</h1>
+      <div class="links">
+        <a href="https://github.com/dogacol/Academic-Papersg" target="_blank">Academic Writing</a>
+        <a href="https://github.com/dogacol/Lectures" target="_blank">Lectures</a>
+        <a href="https://dogacol.substack.com" target="_blank">Substack</a>
+        <a href="https://yourwebsite.com/personal-links" target="_blank">Personal Links</a>
+        <a href="https://yourwebsite.com/contact" target="_blank">Contact</a>
+      </div>
     </div>
     
-    <div class="personal-links">
+    <div class="section">
       <h1>Images and Sounds</h1>
       <div class="links">
         <a href="https://dogacol.bandcamp.com" target="_blank">Bandcamp</a>
