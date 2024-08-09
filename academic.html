@@ -68,6 +68,8 @@
         const fileContentDiv = document.getElementById('file-content');
         const repoUrl = "https://api.github.com/repos/dogacol/Academic-Papers/contents";
 
+        let fileCounter = 1; // Initialize the counter
+
         // Fetch list of files from the GitHub repository
         fetch(repoUrl)
             .then(response => response.json())
@@ -77,18 +79,20 @@
                         const fileLink = document.createElement('div');
                         fileLink.classList.add('file-link');
                         fileLink.id = file.name;
-                        fileLink.textContent = file.name; // Temporary name until the title is fetched
+                        fileLink.textContent = `${fileCounter}. ${file.name.replace(/-/g, ' ').replace('.md', '')}`; // Temporary name until the title is fetched
                         fileLink.onclick = () => loadFileContent(file.name);
                         filesContainer.appendChild(fileLink);
 
                         // Fetch the file content to extract the title
-                        fetchFileTitle(file.name);
+                        fetchFileTitle(file.name, fileCounter);
+
+                        fileCounter++; // Increment the counter for the next file
                     }
                 });
             })
             .catch(error => console.error('Error fetching file list:', error));
 
-        // Function to fetch and display the content of a .md file
+        // Function to load and display the content of a .md file
         function loadFileContent(fileName) {
             const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
 
@@ -104,15 +108,15 @@
         }
 
         // Function to fetch and extract the title from a .md file
-        function fetchFileTitle(fileName) {
+        function fetchFileTitle(fileName, fileCounter) {
             const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
 
             fetch(fileUrl)
                 .then(response => response.text())
                 .then(markdown => {
-                    const titleMatch = markdown.match(/^---\s+title:\s+"(.+?)"\s+---/i);
-                    const title = titleMatch ? titleMatch[1] : fileName;
-                    document.getElementById(fileName).textContent = title;
+                    const titleMatch = markdown.match(/^\s*---\s*title:\s*["'](.+?)["']\s*---/ims);
+                    const title = titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' ').replace('.md', '');
+                    document.getElementById(fileName).textContent = `${fileCounter}. ${title}`;
                 })
                 .catch(error => console.error('Error fetching file title:', error));
         }
