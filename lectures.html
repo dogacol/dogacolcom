@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lectures - Doğa Çöl</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
@@ -10,92 +10,201 @@
         body {
             font-family: 'Cormorant Garamond', serif;
             background-color: #f0f0f0;
-            text-align: center;
-            padding: 20px;
             margin: 0;
             line-height: 1.5;
         }
-        .paper-container {
-            width: 90vw; /* Make it 90% of the viewport width */
-            max-width: calc(8.5in * 2); /* Max width based on US Letter size */
-            height: calc(11in * 2); /* Maintain aspect ratio of US Letter size */
-            background-color: #fff;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            padding: 1in; /* Add padding to simulate margins */
-            box-sizing: border-box; /* Include padding in width/height */
-            overflow-y: auto; /* Allow scrolling if content overflows */
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        .content {
-            max-width: 70%;
-            padding: 10px;
+        .navbar a, .dropdown-btn {
+            float: left;
+            font-size: 16px;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .navbar a:hover, .dropdown:hover .dropdown-btn {
+            background-color: #555;
+            color: white;
+        }
+        .dropdown {
+            float: left;
+            overflow: hidden;
+        }
+        .dropdown .dropdown-btn {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background-color: inherit;
+            margin: 0;
+            font-family: inherit;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            z-index: 1;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+        .dropdown-content a {
+            float: none;
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
             text-align: left;
         }
-        h1 {
-            font-size: 2em;
-            margin-bottom: 30px;
+        .dropdown-content a:hover {
+            background-color: #ddd;
+            color: black;
         }
-        .folder-name {
-            font-size: 1.2em;
-            margin: 20px 0 10px 0;
-            color: #000;
-        }
-        .file-link {
-            font-size: 1.2em;
-            margin: 10px 0;
-            cursor: pointer;
-            color: #333;
-            text-decoration: underline;
-        }
-        .file-link:hover {
-            color: #000;
-        }
-        .file-content {
-            font-size: 1em;
-            color: #333;
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
             background-color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            min-height: calc(100vh - 50px);
+        }
+        .markdown-content {
             margin-top: 20px;
-            display: none;
-            line-height: 1.5; /* Ensures 1.5 line spacing */
-            text-align: justify; /* Ensures the base text is justified */
         }
-
-        .file-content * {
-            text-align: inherit; /* Forces child elements to inherit the text alignment */
-        }
-
         .footer {
             font-size: 0.9em;
             color: #000000;
             text-align: center;
             padding: 10px 0;
             background-color: #f0f0f0;
-            margin-top: 50px;
-        }
-        .back-button {
-            margin-bottom: 20px; /* Add space below the button */
-            text-align: center; /* Align the button to the left */
-        }
-
-        .back-button button {
-            background-color: #333; /* Dark background color */
-            color: #fff; /* White text color */
-            padding: 10px 20px; /* Add padding */
-            font-size: 1em; /* Adjust font size */
-            border: none;
-            border-radius: 5px; /* Slightly rounded corners */
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .back-button button:hover {
-            background-color: #555; /* Slightly lighter on hover */
         }
     </style>
+    <!-- Include Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-    
+    <div class="navbar">
+        <!-- Turkish Classes -->
+        <div class="dropdown">
+            <button class="dropdown-btn">Sanat Tarihi</button>
+            <div class="dropdown-content">
+                <a href="#" data-class="Sanat_Tarihi" data-type="Assignments">Ödevler</a>
+                <a href="#" data-class="Sanat_Tarihi" data-type="References">Kaynaklar</a>
+                <a href="#" data-class="Sanat_Tarihi" data-type="Syllabus">İzlence</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-btn">Kodlama 1</button>
+            <div class="dropdown-content">
+                <a href="#" data-class="Kodlama_1" data-type="Assignments">Ödevler</a>
+                <a href="#" data-class="Kodlama_1" data-type="References">Kaynaklar</a>
+                <a href="#" data-class="Kodlama_1" data-type="Syllabus">İzlence</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-btn">Ses Tasarımı ve Efektleri</button>
+            <div class="dropdown-content">
+                <a href="#" data-class="Ses_Tasarımı_ve_Efektleri" data-type="Assignments">Ödevler</a>
+                <a href="#" data-class="Ses_Tasarımı_ve_Efektleri" data-type="References">Kaynaklar</a>
+                <a href="#" data-class="Ses_Tasarımı_ve_Efektleri" data-type="Syllabus">İzlence</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-btn">RTS Teknik Temelleri</button>
+            <div class="dropdown-content">
+                <a href="#" data-class="RTS_Teknik_Temelleri" data-type="Assignments">Ödevler</a>
+                <a href="#" data-class="RTS_Teknik_Temelleri" data-type="References">Kaynaklar</a>
+                <a href="#" data-class="RTS_Teknik_Temelleri" data-type="Syllabus">İzlence</a>
+            </div>
+        </div>
+        <!-- English Classes -->
+        <div class="dropdown">
+            <button class="dropdown-btn">Web Design</button>
+            <div class="dropdown-content">
+                <a href="#" data-class="Web_Design" data-type="Assignments">Assignments</a>
+                <a href="#" data-class="Web_Design" data-type="References">References</a>
+                <a href="#" data-class="Web_Design" data-type="Syllabus">Weekly Schedule</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-btn">Software Applications</button>
+            <div class="dropdown-content">
+                <a href="#" data-class="Software_Applications" data-type="Assignments">Assignments</a>
+                <a href="#" data-class="Software_Applications" data-type="References">References</a>
+                <a href="#" data-class="Software_Applications" data-type="Syllabus">Weekly Schedule</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="markdown-content" id="markdown-content">
+            <h2>Welcome to Doğa Çöl's Lectures Page</h2>
+            <p>Please select a class and material from the menu above.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2023 Doğa Çöl
+    </div>
+
+    <script>
+        // Handle dropdown functionality
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            const btn = dropdown.querySelector('.dropdown-btn');
+            btn.addEventListener('click', () => {
+                closeAllDropdowns();
+                dropdown.querySelector('.dropdown-content').classList.toggle('show');
+            });
+        });
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-content').forEach(content => {
+                content.classList.remove('show');
+            });
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-btn')) {
+                closeAllDropdowns();
+            }
+        }
+
+        // Handle menu item clicks to fetch and display markdown
+        const menuLinks = document.querySelectorAll('.dropdown-content a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const className = this.getAttribute('data-class');
+                const contentType = this.getAttribute('data-type');
+                fetchAndDisplayMarkdown(className, contentType);
+            });
+        });
+
+        function fetchAndDisplayMarkdown(className, contentType) {
+            const baseURL = 'https://raw.githubusercontent.com/dogacol/Lectures/main';
+            const markdownURL = `${baseURL}/${className}/${contentType}.md`;
+
+            fetch(markdownURL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Markdown file not found.');
+                    }
+                    return response.text();
+                })
+                .then(markdown => {
+                    const htmlContent = marked.parse(markdown);
+                    document.getElementById('markdown-content').innerHTML = htmlContent;
+                    window.scrollTo(0, 0); // Scroll to top after loading content
+                })
+                .catch(error => {
+                    document.getElementById('markdown-content').innerHTML = '<p>Content not available.</p>';
+                    console.error('Error fetching markdown:', error);
+                });
+        }
+    </script>
 </body>
 </html>
