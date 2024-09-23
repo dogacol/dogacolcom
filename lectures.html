@@ -14,67 +14,6 @@
             margin: 0;
             line-height: 1.5;
         }
-        .navbar {
-            overflow: hidden;
-            background-color: #333;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            flex-wrap: wrap;
-            font-family: 'Cormorant Garamond', serif;
-        }
-        .navbar a, .dropdown-btn {
-            font-size: 16px;
-            color: #f2f2f2;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            cursor: pointer;
-            background-color: inherit;
-            border: none;
-            outline: none;
-            font-family: 'Cormorant Garamond', serif;
-        }
-        .navbar a:hover, .dropdown:hover .dropdown-btn {
-            background-color: #555;
-            color: white;
-            font-family: 'Cormorant Garamond', serif;
-        }
-        .dropdown {
-            position: relative;
-            font-family: 'Cormorant Garamond', serif;
-        }
-        .dropdown .dropdown-btn {
-            display: flex;
-            align-items: center;
-            font-family: 'Cormorant Garamond', serif;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%; /* Position the dropdown below the button */
-            left: 0;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            z-index: 1;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        }
-        .dropdown-content a {
-            color: #333;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-            background-color: #f9f9f9;
-        }
-        .dropdown-content a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-        .show {
-            display: block;
-        }
         .content {
             padding: 20px;
             max-width: 800px;
@@ -113,145 +52,178 @@
             padding: 10px 0;
             background-color: #f0f0f0;
         }
+        #class-list, #content-types {
+            margin-top: 20px;
+        }
+        #class-list ul, #content-types ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #class-list li, #content-types li {
+            margin: 5px 0;
+        }
+        #class-list a, #content-types a {
+            color: #0066cc;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #class-list a:hover, #content-types a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <!-- Turkish Classes -->
-        <div class="dropdown">
-            <button class="dropdown-btn">Sanat Tarihi</button>
-            <div class="dropdown-content">
-                <a href="#" data-class="Sanat_Tarihi" data-type="Assignments">Ödevler</a>
-                <a href="#" data-class="Sanat_Tarihi" data-type="References">Kaynaklar</a>
-                <a href="#" data-class="Sanat_Tarihi" data-type="Syllabus">İzlence</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropdown-btn">Kodlama 1</button>
-            <div class="dropdown-content">
-                <a href="#" data-class="Kodlama_1" data-type="Assignments">Ödevler</a>
-                <a href="#" data-class="Kodlama_1" data-type="References">Kaynaklar</a>
-                <a href="#" data-class="Kodlama_1" data-type="Syllabus">İzlence</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropdown-btn">Ses Tasarımı ve Efektleri</button>
-            <div class="dropdown-content">
-                <a href="#" data-class="Ses_Tasarımı_ve_Efektleri" data-type="Assignments">Ödevler</a>
-                <a href="#" data-class="Ses_Tasarımı_ve_Efektleri" data-type="References">Kaynaklar</a>
-                <a href="#" data-class="Ses_Tasarımı_ve_Efektleri" data-type="Syllabus">İzlence</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropdown-btn">RTS Teknik Temelleri</button>
-            <div class="dropdown-content">
-                <a href="#" data-class="RTS_Teknik_Temelleri" data-type="Assignments">Ödevler</a>
-                <a href="#" data-class="RTS_Teknik_Temelleri" data-type="References">Kaynaklar</a>
-                <a href="#" data-class="RTS_Teknik_Temelleri" data-type="Syllabus">İzlence</a>
-            </div>
-        </div>
-        <!-- English Classes -->
-        <div class="dropdown">
-            <button class="dropdown-btn">Web Design</button>
-            <div class="dropdown-content">
-                <a href="#" data-class="Web_Design" data-type="Assignments">Assignments</a>
-                <a href="#" data-class="Web_Design" data-type="References">References</a>
-                <a href="#" data-class="Web_Design" data-type="Syllabus">Weekly Schedule</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropdown-btn">Software Applications</button>
-            <div class="dropdown-content">
-                <a href="#" data-class="Software_Applications" data-type="Assignments">Assignments</a>
-                <a href="#" data-class="Software_Applications" data-type="References">References</a>
-                <a href="#" data-class="Software_Applications" data-type="Syllabus">Weekly Schedule</a>
-            </div>
-        </div>
-    </div>
-
     <div class="content">
+        <h2>Welcome to Doğa Çöl's Lectures Page</h2>
+        <div id="class-list">
+            <h3>Classes:</h3>
+            <ul>
+                <li><a href="#" data-class="Sanat_Tarihi">Sanat Tarihi</a></li>
+                <li><a href="#" data-class="Kodlama_1">Kodlama 1</a></li>
+                <li><a href="#" data-class="Ses_Tasarımı_ve_Efektleri">Ses Tasarımı ve Efektleri</a></li>
+                <li><a href="#" data-class="RTS_Teknik_Temelleri">RTS Teknik Temelleri</a></li>
+                <li><a href="#" data-class="Web_Design">Web Design</a></li>
+                <li><a href="#" data-class="Software_Applications">Software Applications</a></li>
+            </ul>
+        </div>
+        <div id="content-types">
+            <!-- Content types will be displayed here when a class is clicked -->
+        </div>
         <div class="markdown-content" id="markdown-content">
-            <h2>Welcome to Doğa Çöl's Lectures Page</h2>
-            <p>Please select a class and material from the menu above.</p>
+            <!-- Markdown content will be displayed here -->
         </div>
     </div>
-
     <div class="footer">
         &copy; 2023 Doğa Çöl
     </div>
 
+    <button onclick="goToIndex()">Go to Index</button>
+
     <script>
-        // Handle dropdown functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropdownBtns = document.querySelectorAll('.dropdown-btn');
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
 
-            dropdownBtns.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent the event from bubbling up
-                    closeAllDropdownsExcept(this.nextElementSibling);
-                    this.nextElementSibling.classList.toggle('show');
-                });
-            });
-
-            function closeAllDropdownsExcept(currentDropdown) {
-                const dropdowns = document.querySelectorAll('.dropdown-content');
-                dropdowns.forEach(dropdown => {
-                    if (dropdown !== currentDropdown) {
-                        dropdown.classList.remove('show');
-                    }
-                });
+        // Define classes and their content types
+        const classes = {
+            'Sanat_Tarihi': {
+                displayName: 'Sanat Tarihi',
+                contentTypes: [
+                    {type: 'Assignments', displayName: 'Ödevler'},
+                    {type: 'References', displayName: 'Kaynaklar'},
+                    {type: 'Syllabus', displayName: 'İzlence'}
+                ]
+            },
+            'Kodlama_1': {
+                displayName: 'Kodlama 1',
+                contentTypes: [
+                    {type: 'Assignments', displayName: 'Ödevler'},
+                    {type: 'References', displayName: 'Kaynaklar'},
+                    {type: 'Syllabus', displayName: 'İzlence'}
+                ]
+            },
+            'Ses_Tasarımı_ve_Efektleri': {
+                displayName: 'Ses Tasarımı ve Efektleri',
+                contentTypes: [
+                    {type: 'Assignments', displayName: 'Ödevler'},
+                    {type: 'References', displayName: 'Kaynaklar'},
+                    {type: 'Syllabus', displayName: 'İzlence'}
+                ]
+            },
+            'RTS_Teknik_Temelleri': {
+                displayName: 'RTS Teknik Temelleri',
+                contentTypes: [
+                    {type: 'Assignments', displayName: 'Ödevler'},
+                    {type: 'References', displayName: 'Kaynaklar'},
+                    {type: 'Syllabus', displayName: 'İzlence'}
+                ]
+            },
+            'Web_Design': {
+                displayName: 'Web Design',
+                contentTypes: [
+                    {type: 'Assignments', displayName: 'Assignments'},
+                    {type: 'References', displayName: 'References'},
+                    {type: 'Syllabus', displayName: 'Weekly Schedule'}
+                ]
+            },
+            'Software_Applications': {
+                displayName: 'Software Applications',
+                contentTypes: [
+                    {type: 'Assignments', displayName: 'Assignments'},
+                    {type: 'References', displayName: 'References'},
+                    {type: 'Syllabus', displayName: 'Weekly Schedule'}
+                ]
             }
+        };
 
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(event) {
-                if (!event.target.closest('.dropdown')) {
-                    const dropdowns = document.querySelectorAll('.dropdown-content');
-                    dropdowns.forEach(dropdown => {
-                        dropdown.classList.remove('show');
-                    });
-                }
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners to class links
+            const classLinks = document.querySelectorAll('#class-list a');
 
-            // Handle menu item clicks to fetch and display markdown
-            const menuLinks = document.querySelectorAll('.dropdown-content a');
-            menuLinks.forEach(link => {
+            classLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const className = this.getAttribute('data-class');
-                    const contentType = this.getAttribute('data-type');
-                    fetchAndDisplayMarkdown(className, contentType);
-                    // Close dropdown after selection
-                    const dropdownContent = this.closest('.dropdown-content');
-                    dropdownContent.classList.remove('show');
+                    displayContentTypes(className);
                 });
             });
-
-            function fetchAndDisplayMarkdown(className, contentType) {
-                const baseURL = 'https://raw.githubusercontent.com/dogacol/Lectures/main';
-                const markdownURL = `${baseURL}/${className}/${contentType}.md`;
-
-                fetch(markdownURL)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Markdown file not found.');
-                        }
-                        return response.text();
-                    })
-                    .then(markdown => {
-                        const htmlContent = marked.parse(markdown);
-                        const title = contentType.replace(/_/g, ' ');
-                        document.getElementById('markdown-content').innerHTML = `
-                            <h1 style="text-align: center;">${title}</h1>
-                            ${htmlContent}
-                        `;
-                        window.scrollTo(0, 0); // Scroll to top after loading content
-                    })
-                    .catch(error => {
-                        document.getElementById('markdown-content').innerHTML = '<p>Content not available.</p>';
-                        console.error('Error fetching markdown:', error);
-                    });
-            }
         });
+
+        function displayContentTypes(className) {
+            const contentTypesDiv = document.getElementById('content-types');
+            contentTypesDiv.innerHTML = ''; // Clear previous content
+
+            const classInfo = classes[className];
+            if (!classInfo) {
+                contentTypesDiv.innerHTML = '<p>Class not found.</p>';
+                return;
+            }
+
+            const contentTypesList = document.createElement('ul');
+
+            classInfo.contentTypes.forEach(contentType => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#';
+                a.setAttribute('data-class', className);
+                a.setAttribute('data-type', contentType.type);
+                a.textContent = contentType.displayName;
+                a.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fetchAndDisplayMarkdown(className, contentType.type);
+                });
+                li.appendChild(a);
+                contentTypesList.appendChild(li);
+            });
+
+            contentTypesDiv.appendChild(contentTypesList);
+        }
+
+        function fetchAndDisplayMarkdown(className, contentType) {
+            const baseURL = 'https://raw.githubusercontent.com/dogacol/Lectures/main';
+            const markdownURL = `${baseURL}/${className}/${contentType}.md`;
+
+            fetch(markdownURL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Markdown file not found.');
+                    }
+                    return response.text();
+                })
+                .then(markdown => {
+                    const htmlContent = marked.parse(markdown);
+                    const title = contentType.replace(/_/g, ' ');
+                    document.getElementById('markdown-content').innerHTML = `
+                        <h1 style="text-align: center;">${title}</h1>
+                        ${htmlContent}
+                    `;
+                    window.scrollTo(0, 0); // Scroll to top after loading content
+                })
+                .catch(error => {
+                    document.getElementById('markdown-content').innerHTML = '<p>Content not available.</p>';
+                    console.error('Error fetching markdown:', error);
+                });
+        }
     </script>
 </body>
 </html>
