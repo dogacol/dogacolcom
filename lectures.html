@@ -204,7 +204,7 @@
 
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(event) {
-                if (!event.target.matches('.dropdown-btn')) {
+                if (!event.target.closest('.dropdown')) {
                     const dropdowns = document.querySelectorAll('.dropdown-content');
                     dropdowns.forEach(dropdown => {
                         dropdown.classList.remove('show');
