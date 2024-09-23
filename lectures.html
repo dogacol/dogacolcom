@@ -52,23 +52,44 @@
             padding: 10px 0;
             background-color: #f0f0f0;
         }
-        #class-list, #content-types {
+        #class-list, #file-list {
             margin-top: 20px;
         }
-        #class-list ul, #content-types ul {
+        #class-list ul, #file-list ul {
             list-style-type: none;
             padding: 0;
         }
-        #class-list li, #content-types li {
+        #class-list li, #file-list li {
             margin: 5px 0;
         }
-        #class-list a, #content-types a {
+        #class-list a, #file-list a {
             color: #0066cc;
             text-decoration: none;
             cursor: pointer;
         }
-        #class-list a:hover, #content-types a:hover {
+        #class-list a:hover, #file-list a:hover {
             text-decoration: underline;
+        }
+        #back-button {
+            display: none;
+            margin: 20px auto;
+            text-align: center;
+        }
+        #back-button button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        #go-to-index {
+            margin: 20px auto;
+            text-align: center;
+        }
+        #go-to-index button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -86,75 +107,27 @@
                 <li><a href="#" data-class="Software_Applications">Software Applications</a></li>
             </ul>
         </div>
-        <div id="content-types">
-            <!-- Content types will be displayed here when a class is clicked -->
+        <div id="file-list">
+            <!-- File names will be displayed here when a class is clicked -->
         </div>
         <div class="markdown-content" id="markdown-content">
             <!-- Markdown content will be displayed here -->
+        </div>
+        <div id="back-button">
+            <button onclick="resetPage()">Back</button>
+        </div>
+        <div id="go-to-index">
+            <button onclick="goToIndex()">Go to Index</button>
         </div>
     </div>
     <div class="footer">
         &copy; 2023 Doğa Çöl
     </div>
 
-    <button onclick="goToIndex()">Go to Index</button>
-
     <script>
         function goToIndex() {
             window.location.href = 'index.html';
         }
-
-        // Define classes and their content types
-        const classes = {
-            'Sanat_Tarihi': {
-                displayName: 'Sanat Tarihi',
-                contentTypes: [
-                    {type: 'Assignments', displayName: 'Ödevler'},
-                    {type: 'References', displayName: 'Kaynaklar'},
-                    {type: 'Syllabus', displayName: 'İzlence'}
-                ]
-            },
-            'Kodlama_1': {
-                displayName: 'Kodlama 1',
-                contentTypes: [
-                    {type: 'Assignments', displayName: 'Ödevler'},
-                    {type: 'References', displayName: 'Kaynaklar'},
-                    {type: 'Syllabus', displayName: 'İzlence'}
-                ]
-            },
-            'Ses_Tasarımı_ve_Efektleri': {
-                displayName: 'Ses Tasarımı ve Efektleri',
-                contentTypes: [
-                    {type: 'Assignments', displayName: 'Ödevler'},
-                    {type: 'References', displayName: 'Kaynaklar'},
-                    {type: 'Syllabus', displayName: 'İzlence'}
-                ]
-            },
-            'RTS_Teknik_Temelleri': {
-                displayName: 'RTS Teknik Temelleri',
-                contentTypes: [
-                    {type: 'Assignments', displayName: 'Ödevler'},
-                    {type: 'References', displayName: 'Kaynaklar'},
-                    {type: 'Syllabus', displayName: 'İzlence'}
-                ]
-            },
-            'Web_Design': {
-                displayName: 'Web Design',
-                contentTypes: [
-                    {type: 'Assignments', displayName: 'Assignments'},
-                    {type: 'References', displayName: 'References'},
-                    {type: 'Syllabus', displayName: 'Weekly Schedule'}
-                ]
-            },
-            'Software_Applications': {
-                displayName: 'Software Applications',
-                contentTypes: [
-                    {type: 'Assignments', displayName: 'Assignments'},
-                    {type: 'References', displayName: 'References'},
-                    {type: 'Syllabus', displayName: 'Weekly Schedule'}
-                ]
-            }
-        };
 
         document.addEventListener('DOMContentLoaded', () => {
             // Add event listeners to class links
@@ -164,44 +137,85 @@
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const className = this.getAttribute('data-class');
-                    displayContentTypes(className);
+                    displayMarkdownFiles(className);
                 });
             });
         });
 
-        function displayContentTypes(className) {
-            const contentTypesDiv = document.getElementById('content-types');
-            contentTypesDiv.innerHTML = ''; // Clear previous content
+        function displayMarkdownFiles(className) {
+            const classListDiv = document.getElementById('class-list');
+            const fileListDiv = document.getElementById('file-list');
+            const backButtonDiv = document.getElementById('back-button');
+            const markdownContentDiv = document.getElementById('markdown-content');
 
-            const classInfo = classes[className];
-            if (!classInfo) {
-                contentTypesDiv.innerHTML = '<p>Class not found.</p>';
-                return;
-            }
+            // Hide the class list
+            classListDiv.style.display = 'none';
 
-            const contentTypesList = document.createElement('ul');
+            // Clear previous file list and markdown content
+            fileListDiv.innerHTML = '';
+            markdownContentDiv.innerHTML = '';
 
-            classInfo.contentTypes.forEach(contentType => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = '#';
-                a.setAttribute('data-class', className);
-                a.setAttribute('data-type', contentType.type);
-                a.textContent = contentType.displayName;
-                a.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    fetchAndDisplayMarkdown(className, contentType.type);
+            const githubAPIUrl = `https://api.github.com/repos/dogacol/Lectures/contents/${encodeURIComponent(className)}`;
+
+            fetch(githubAPIUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch directory contents.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Filter out only markdown files
+                    const markdownFiles = data.filter(item => item.name.endsWith('.md'));
+
+                    if (markdownFiles.length === 0) {
+                        fileListDiv.innerHTML = '<p>No markdown files found in this class.</p>';
+                        return;
+                    }
+
+                    const fileList = document.createElement('ul');
+
+                    markdownFiles.forEach(file => {
+                        const fileName = file.name;
+                        const displayName = fileName.replace('.md', '').replace(/_/g, ' ');
+
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = '#';
+                        a.setAttribute('data-class', className);
+                        a.setAttribute('data-filename', fileName);
+                        a.textContent = displayName;
+                        a.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            fetchAndDisplayMarkdown(className, fileName);
+                        });
+                        li.appendChild(a);
+                        fileList.appendChild(li);
+                    });
+
+                    const heading = document.createElement('h3');
+                    heading.textContent = `Files in ${className.replace(/_/g, ' ')}:`;
+                    fileListDiv.appendChild(heading);
+                    fileListDiv.appendChild(fileList);
+
+                    // Show the back button
+                    backButtonDiv.style.display = 'block';
+                })
+                .catch(error => {
+                    fileListDiv.innerHTML = '<p>Error fetching files. Please try again later.</p>';
+                    console.error('Error fetching directory contents:', error);
                 });
-                li.appendChild(a);
-                contentTypesList.appendChild(li);
-            });
-
-            contentTypesDiv.appendChild(contentTypesList);
         }
 
-        function fetchAndDisplayMarkdown(className, contentType) {
+        function fetchAndDisplayMarkdown(className, fileName) {
+            const fileListDiv = document.getElementById('file-list');
+            const markdownContentDiv = document.getElementById('markdown-content');
+
+            // Optionally hide file list if you want only the markdown content to be visible
+            // fileListDiv.style.display = 'none';
+
             const baseURL = 'https://raw.githubusercontent.com/dogacol/Lectures/main';
-            const markdownURL = `${baseURL}/${className}/${contentType}.md`;
+            const markdownURL = `${baseURL}/${encodeURIComponent(className)}/${encodeURIComponent(fileName)}`;
 
             fetch(markdownURL)
                 .then(response => {
@@ -212,17 +226,37 @@
                 })
                 .then(markdown => {
                     const htmlContent = marked.parse(markdown);
-                    const title = contentType.replace(/_/g, ' ');
-                    document.getElementById('markdown-content').innerHTML = `
+                    const title = fileName.replace('.md', '').replace(/_/g, ' ');
+                    markdownContentDiv.innerHTML = `
                         <h1 style="text-align: center;">${title}</h1>
                         ${htmlContent}
                     `;
                     window.scrollTo(0, 0); // Scroll to top after loading content
                 })
                 .catch(error => {
-                    document.getElementById('markdown-content').innerHTML = '<p>Content not available.</p>';
+                    markdownContentDiv.innerHTML = '<p>Content not available.</p>';
                     console.error('Error fetching markdown:', error);
                 });
+        }
+
+        function resetPage() {
+            const classListDiv = document.getElementById('class-list');
+            const fileListDiv = document.getElementById('file-list');
+            const markdownContentDiv = document.getElementById('markdown-content');
+            const backButtonDiv = document.getElementById('back-button');
+
+            // Show the class list
+            classListDiv.style.display = 'block';
+
+            // Hide file list and markdown content
+            fileListDiv.innerHTML = '';
+            markdownContentDiv.innerHTML = '';
+
+            // Hide the back button
+            backButtonDiv.style.display = 'none';
+
+            // Scroll to top
+            window.scrollTo(0, 0);
         }
     </script>
 </body>
