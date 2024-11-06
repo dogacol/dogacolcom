@@ -2,261 +2,167 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Lectures - Doğa Çöl</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
-    <!-- Include Marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         body {
             font-family: 'Cormorant Garamond', serif;
             background-color: #f0f0f0;
+            text-align: center;
+            padding: 20px;
             margin: 0;
             line-height: 1.5;
         }
         .content {
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-            background-color: #fff;
-            min-height: calc(100vh - 50px);
-        }
-        .markdown-content {
-            margin-top: 20px;
-            font-family: inherit;
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-        }
-        .markdown-content h1, .markdown-content h2, .markdown-content h3,
-        .markdown-content h4, .markdown-content h5, .markdown-content h6 {
-            font-weight: 700;
-        }
-        .markdown-content p {
-            margin: 1em 0;
-        }
-        .markdown-content img {
             max-width: 100%;
+            padding: 10px;
+            text-align: left;
         }
-        .markdown-content a {
-            color: #0066cc;
-            text-decoration: none;
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
         }
-        .markdown-content a:hover {
+        .folder-link, .file-link {
+            font-size: 1.3em;
+            margin: 10px 0;
+            cursor: pointer;
+            color: #333;
             text-decoration: underline;
         }
+        .folder-link:hover, .file-link:hover {
+            color: #000;
+        }
+        .file-content {
+            font-size: 1.2em;
+            color: #333;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            width: 60%;
+            max-width: 800px;
+            display: none;
+            line-height: 1.5;
+        }
+
         .footer {
             font-size: 0.9em;
             color: #000000;
             text-align: center;
             padding: 10px 0;
             background-color: #f0f0f0;
+            margin-top: 50px;
         }
-        #class-list, #file-list {
-            margin-top: 20px;
-        }
-        #class-list ul, #file-list ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        #class-list li, #file-list li {
-            margin: 5px 0;
-        }
-        #class-list a, #file-list a {
-            color: #0066cc;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        #class-list a:hover, #file-list a:hover {
-            text-decoration: underline;
-        }
-        #back-button {
-            display: none;
-            margin: 20px auto;
+        .back-button {
+            margin-bottom: 20px;
             text-align: center;
         }
-        #back-button button {
+        .back-button button {
+            background-color: #333;
+            color: #fff;
             padding: 10px 20px;
-            font-size: 16px;
-            font-family: inherit;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
-        #go-to-index {
-            margin: 20px auto;
-            text-align: center;
-        }
-        #go-to-index button {
-            padding: 10px 20px;
-            font-size: 16px;
-            font-family: inherit;
-            cursor: pointer;
+        .back-button button:hover {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
     <div class="content">
-        <h2>Welcome to Doğa Çöl's Lectures Page</h2>
-        <div id="class-list">
-            <h3>Classes:</h3>
-            <ul>
-                <li><a href="#" data-class="Sanat_Tarihi">Sanat Tarihi</a></li>
-                <li><a href="#" data-class="Kodlama_1">Kodlama 1</a></li>
-                <li><a href="#" data-class="Ses_Tasarımı_ve_Efektleri">Ses Tasarımı ve Efektleri</a></li>
-                <li><a href="#" data-class="RTS_Teknik_Temelleri">RTS Teknik Temelleri</a></li>
-                <li><a href="#" data-class="Web_Design">Web Design</a></li>
-                <li><a href="#" data-class="Software_Applications">Software Applications</a></li>
-            </ul>
-        </div>
-        <div id="file-list">
-            <!-- File names will be displayed here when a class is clicked -->
-        </div>
-        <div class="markdown-content" id="markdown-content">
-            <!-- Markdown content will be displayed here -->
-        </div>
-        <div id="back-button">
-            <button onclick="resetPage()">Back</button>
-        </div>
-        <div id="go-to-index">
-            <button onclick="goToIndex()">Go to Index</button>
-        </div>
+        <h1>Lectures</h1>
+        <div id="folders"></div>
+        <div id="files" style="display: none;"></div>
+        <div id="file-content" class="file-content"></div>
     </div>
+    <div class="back-button" style="display: none;">
+        <button onclick="goToIndex()">&#8592; Back</button>
+    </div>
+
     <div class="footer">
-        &copy; 2023 Doğa Çöl
+        &copy; 2024 Doğa Çöl
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
     <script>
-        function goToIndex() {
-            window.location.href = 'index.html';
-        }
+        const foldersContainer = document.getElementById('folders');
+        const filesContainer = document.getElementById('files');
+        const fileContentDiv = document.getElementById('file-content');
+        const backButton = document.querySelector('.back-button');
+        const repoUrl = "https://api.github.com/repos/dogacol/Lectures/contents";
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add event listeners to class links
-            const classLinks = document.querySelectorAll('#class-list a');
-
-            classLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const className = this.getAttribute('data-class');
-                    displayMarkdownFiles(className);
-                });
-            });
-        });
-
-        function displayMarkdownFiles(className) {
-            const classListDiv = document.getElementById('class-list');
-            const fileListDiv = document.getElementById('file-list');
-            const backButtonDiv = document.getElementById('back-button');
-            const markdownContentDiv = document.getElementById('markdown-content');
-
-            // Hide the class list
-            classListDiv.style.display = 'none';
-
-            // Clear previous file list and markdown content
-            fileListDiv.innerHTML = '';
-            markdownContentDiv.innerHTML = '';
-
-            const githubAPIUrl = `https://api.github.com/repos/dogacol/Lectures/contents/${encodeURIComponent(className)}`;
-
-            fetch(githubAPIUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch directory contents.');
+        // Fetch the top-level directory to list folders
+        fetch(repoUrl)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(item => {
+                    // Filter out hidden directories and those that start with a dot (e.g., .obsidian, .git)
+                    if (item.type === 'dir' && !item.name.startsWith('.')) {
+                        const folderLink = document.createElement('div');
+                        folderLink.classList.add('folder-link');
+                        folderLink.textContent = item.name;
+                        folderLink.onclick = () => loadFolderContents(item.name);
+                        foldersContainer.appendChild(folderLink);
                     }
-                    return response.json();
-                })
+                });
+            })
+            .catch(error => console.error('Error fetching directory list:', error));
+
+        // Load the contents of a selected folder
+        function loadFolderContents(folderName) {
+            const folderUrl = `${repoUrl}/${folderName}`;
+
+            // Clear the previous files and hide the file content area
+            filesContainer.innerHTML = '';
+            filesContainer.style.display = 'block';
+            fileContentDiv.style.display = 'none';
+            backButton.style.display = 'block';  // Show the back button
+            foldersContainer.style.display = 'none'; // Hide folders view
+
+            fetch(folderUrl)
+                .then(response => response.json())
                 .then(data => {
-                    // Filter out only markdown files
-                    const markdownFiles = data.filter(item => item.name.endsWith('.md'));
-
-                    if (markdownFiles.length === 0) {
-                        fileListDiv.innerHTML = '<p>No markdown files found in this class.</p>';
-                        return;
-                    }
-
-                    const fileList = document.createElement('ul');
-
-                    markdownFiles.forEach(file => {
-                        const fileName = file.name;
-                        const displayName = fileName.replace('.md', '').replace(/_/g, ' ');
-
-                        const li = document.createElement('li');
-                        const a = document.createElement('a');
-                        a.href = '#';
-                        a.setAttribute('data-class', className);
-                        a.setAttribute('data-filename', fileName);
-                        a.textContent = displayName;
-                        a.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            fetchAndDisplayMarkdown(className, fileName);
-                        });
-                        li.appendChild(a);
-                        fileList.appendChild(li);
+                    data.forEach(file => {
+                        if (file.name.endsWith('.md')) {
+                            const fileLink = document.createElement('div');
+                            fileLink.classList.add('file-link');
+                            fileLink.textContent = file.name.replace(/-/g, ' ').replace('.md', '');
+                            fileLink.onclick = () => loadFileContent(folderName, file.name);
+                            filesContainer.appendChild(fileLink);
+                        }
                     });
-
-                    const heading = document.createElement('h3');
-                    heading.textContent = `Files in ${className.replace(/_/g, ' ')}:`;
-                    fileListDiv.appendChild(heading);
-                    fileListDiv.appendChild(fileList);
-
-                    // Show the back button
-                    backButtonDiv.style.display = 'block';
                 })
-                .catch(error => {
-                    fileListDiv.innerHTML = '<p>Error fetching files. Please try again later.</p>';
-                    console.error('Error fetching directory contents:', error);
-                });
+                .catch(error => console.error('Error fetching folder contents:', error));
         }
 
-        function fetchAndDisplayMarkdown(className, fileName) {
-            const fileListDiv = document.getElementById('file-list');
-            const markdownContentDiv = document.getElementById('markdown-content');
+        // Load and display the content of a .md file
+        function loadFileContent(folderName, fileName) {
+            const fileUrl = `https://raw.githubusercontent.com/dogacol/Lectures/main/${folderName}/${fileName}`;
 
-            // Optionally hide file list if you want only the markdown content to be visible
-            // fileListDiv.style.display = 'none';
-
-            const baseURL = 'https://raw.githubusercontent.com/dogacol/Lectures/main';
-            const markdownURL = `${baseURL}/${encodeURIComponent(className)}/${encodeURIComponent(fileName)}`;
-
-            fetch(markdownURL)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Markdown file not found.');
-                    }
-                    return response.text();
-                })
+            fetch(fileUrl)
+                .then(response => response.text())
                 .then(markdown => {
-                    const htmlContent = marked.parse(markdown);
-                    const title = fileName.replace('.md', '').replace(/_/g, ' ');
-                    markdownContentDiv.innerHTML = `
-                        <h1 style="text-align: center;">${title}</h1>
-                        ${htmlContent}
-                    `;
-                    window.scrollTo(0, 0); // Scroll to top after loading content
+                    const converter = new showdown.Converter();
+                    const htmlContent = converter.makeHtml(markdown);
+                    fileContentDiv.innerHTML = htmlContent;
+                    fileContentDiv.style.display = 'block';
+                    filesContainer.style.display = 'none';  // Hide file list when showing content
                 })
-                .catch(error => {
-                    markdownContentDiv.innerHTML = '<p>Content not available.</p>';
-                    console.error('Error fetching markdown:', error);
-                });
+                .catch(error => console.error('Error fetching file content:', error));
         }
 
-        function resetPage() {
-            const classListDiv = document.getElementById('class-list');
-            const fileListDiv = document.getElementById('file-list');
-            const markdownContentDiv = document.getElementById('markdown-content');
-            const backButtonDiv = document.getElementById('back-button');
-
-            // Show the class list
-            classListDiv.style.display = 'block';
-
-            // Hide file list and markdown content
-            fileListDiv.innerHTML = '';
-            markdownContentDiv.innerHTML = '';
-
-            // Hide the back button
-            backButtonDiv.style.display = 'none';
-
-            // Scroll to top
-            window.scrollTo(0, 0);
+        function goToIndex() {
+            // Reset the view to show folders only
+            filesContainer.style.display = 'none';
+            fileContentDiv.style.display = 'none';
+            foldersContainer.style.display = 'block';
+            backButton.style.display = 'none';
         }
     </script>
 </body>
