@@ -53,39 +53,47 @@
     <div id="syllabus"></div>
   </div>
 
-  <!-- Load marked.js for rendering Markdown -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     const repoOwner = "dogacol";
     const repoName = "Lectures";
     const branch = "main";
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents?ref=${branch}`;
+
+    // course folder -> display name
+    const courses = {
+      "RTS%20Teknik%20Temeller": "RTS Teknik Temeller",
+      "Sanat%20Tarihi": "Sanat Tarihi",
+      "Gorsel%20Kultur": "Görsel Kültür"
+    };
 
     async function loadFileList() {
-      const response = await fetch(apiUrl);
-      const files = await response.json();
       const list = document.getElementById("file-list");
-
-      files.forEach(file => {
-        if (file.name.endsWith(".md")) {
-          const li = document.createElement("li");
-          const link = document.createElement("a");
-          link.href = "#";
-          link.textContent = file.name.replace(".md", "");
-          link.onclick = (e) => {
-            e.preventDefault();
-            loadSyllabus(file.download_url);
-          };
-          li.appendChild(link);
-          list.appendChild(li);
-        }
+      Object.entries(courses).forEach(([folder, displayName]) => {
+        const li = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = "#";
+        link.textContent = displayName;
+        link.onclick = (e) => {
+          e.preventDefault();
+          loadSyllabus(folder);
+        };
+        li.appendChild(link);
+        list.appendChild(li);
       });
     }
 
-    async function loadSyllabus(url) {
-      const response = await fetch(url);
-      const text = await response.text();
-      document.getElementById("syllabus").innerHTML = marked.parse(text);
+    async function loadSyllabus(folder) {
+      const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folder}?ref=${branch}`;
+      const response = await fetch(apiUrl);
+      const files = await response.json();
+      const syllabusFile = files.find(f => f.name.toLowerCase() === "syllabus.md");
+      if (syllabusFile) {
+        const raw = await fetch(syllabusFile.download_url);
+        const text = await raw.text();
+        document.getElementById("syllabus").innerHTML = marked.parse(text);
+      } else {
+        document.getElementById("syllabus").innerHTML = "<p>No syllabus found in this folder.</p>";
+      }
     }
 
     loadFileList();
