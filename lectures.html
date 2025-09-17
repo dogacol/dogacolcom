@@ -1,169 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Lectures - Doğa Çöl</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
-    <style>
-        body {
-            font-family: 'Cormorant Garamond', serif;
-            background-color: #f0f0f0;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-            line-height: 1.5;
-        }
-        .content {
-            max-width: 100%;
-            padding: 10px;
-            text-align: left;
-        }
-        h1 {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-        }
-        .folder-link, .file-link {
-            font-size: 1.3em;
-            margin: 10px 0;
-            cursor: pointer;
-            color: #333;
-            text-decoration: underline;
-        }
-        .folder-link:hover, .file-link:hover {
-            color: #000;
-        }
-        .file-content {
-            font-size: 1.2em;
-            color: #333;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-            width: 60%;
-            max-width: 800px;
-            display: none;
-            line-height: 1.5;
-        }
-
-        .footer {
-            font-size: 0.9em;
-            color: #000000;
-            text-align: center;
-            padding: 10px 0;
-            background-color: #f0f0f0;
-            margin-top: 50px;
-        }
-        .back-button {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .back-button button {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 1em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .back-button button:hover {
-            background-color: #555;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lectures – Doğa Çöl</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fff;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 8px 0;
+    }
+    a {
+      text-decoration: none;
+      color: #000;
+      font-size: 1.2em;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    #syllabus {
+      margin-top: 40px;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
-    <div class="content">
-        <h1>Lectures</h1>
-        <div id="folders"></div>
-        <div id="files" style="display: none;"></div>
-        <div id="file-content" class="file-content"></div>
-    </div>
-    <div class="back-button" style="display: none;">
-        <button onclick="goToIndex()">&#8592; Back</button>
-    </div>
+  <div class="container">
+    <h1>Lecture Syllabi</h1>
+    <p>Select a course to view its syllabus:</p>
+    <ul id="file-list"></ul>
+    <div id="syllabus"></div>
+  </div>
 
-    <div class="footer">
-        &copy; 2024 Doğa Çöl
-    </div>
+  <!-- Load marked.js for rendering Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const repoOwner = "dogacol";
+    const repoName = "Lectures";
+    const branch = "main";
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents?ref=${branch}`;
 
-    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
-    <script>
-        const foldersContainer = document.getElementById('folders');
-        const filesContainer = document.getElementById('files');
-        const fileContentDiv = document.getElementById('file-content');
-        const backButton = document.querySelector('.back-button');
-        const repoUrl = "https://api.github.com/repos/dogacol/Lectures/contents";
+    async function loadFileList() {
+      const response = await fetch(apiUrl);
+      const files = await response.json();
+      const list = document.getElementById("file-list");
 
-        // Fetch the top-level directory to list folders
-        fetch(repoUrl)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(item => {
-                    // Filter out hidden directories and those that start with a dot (e.g., .obsidian, .git)
-                    if (item.type === 'dir' && !item.name.startsWith('.')) {
-                        const folderLink = document.createElement('div');
-                        folderLink.classList.add('folder-link');
-                        folderLink.textContent = item.name;
-                        folderLink.onclick = () => loadFolderContents(item.name);
-                        foldersContainer.appendChild(folderLink);
-                    }
-                });
-            })
-            .catch(error => console.error('Error fetching directory list:', error));
-
-        // Load the contents of a selected folder
-        function loadFolderContents(folderName) {
-            const folderUrl = `${repoUrl}/${folderName}`;
-
-            // Clear the previous files and hide the file content area
-            filesContainer.innerHTML = '';
-            filesContainer.style.display = 'block';
-            fileContentDiv.style.display = 'none';
-            backButton.style.display = 'block';  // Show the back button
-            foldersContainer.style.display = 'none'; // Hide folders view
-
-            fetch(folderUrl)
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(file => {
-                        if (file.name.endsWith('.md')) {
-                            const fileLink = document.createElement('div');
-                            fileLink.classList.add('file-link');
-                            fileLink.textContent = file.name.replace(/-/g, ' ').replace('.md', '');
-                            fileLink.onclick = () => loadFileContent(folderName, file.name);
-                            filesContainer.appendChild(fileLink);
-                        }
-                    });
-                })
-                .catch(error => console.error('Error fetching folder contents:', error));
+      files.forEach(file => {
+        if (file.name.endsWith(".md")) {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = "#";
+          link.textContent = file.name.replace(".md", "");
+          link.onclick = (e) => {
+            e.preventDefault();
+            loadSyllabus(file.download_url);
+          };
+          li.appendChild(link);
+          list.appendChild(li);
         }
+      });
+    }
 
-        // Load and display the content of a .md file
-        function loadFileContent(folderName, fileName) {
-            const fileUrl = `https://raw.githubusercontent.com/dogacol/Lectures/main/${folderName}/${fileName}`;
+    async function loadSyllabus(url) {
+      const response = await fetch(url);
+      const text = await response.text();
+      document.getElementById("syllabus").innerHTML = marked.parse(text);
+    }
 
-            fetch(fileUrl)
-                .then(response => response.text())
-                .then(markdown => {
-                    const converter = new showdown.Converter();
-                    const htmlContent = converter.makeHtml(markdown);
-                    fileContentDiv.innerHTML = htmlContent;
-                    fileContentDiv.style.display = 'block';
-                    filesContainer.style.display = 'none';  // Hide file list when showing content
-                })
-                .catch(error => console.error('Error fetching file content:', error));
-        }
-
-        function goToIndex() {
-            // Reset the view to show folders only
-            filesContainer.style.display = 'none';
-            fileContentDiv.style.display = 'none';
-            foldersContainer.style.display = 'block';
-            backButton.style.display = 'none';
-        }
-    </script>
+    loadFileList();
+  </script>
 </body>
 </html>
