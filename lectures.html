@@ -12,7 +12,7 @@
       padding: 0;
       background-color: #f0f0f0;
       line-height: 1.6;
-      font-size: 18px; /* base font size increased */
+      font-size: 18px;
     }
     .container {
       max-width: 900px;
@@ -22,7 +22,7 @@
     }
     h1 {
       text-align: center;
-      font-size: 2.4em; /* bigger title */
+      font-size: 2.4em;
     }
     ul {
       list-style-type: none;
@@ -34,7 +34,7 @@
     a {
       text-decoration: none;
       color: #000;
-      font-size: 1.3em; /* bigger course list links */
+      font-size: 1.3em;
     }
     a:hover {
       text-decoration: underline;
@@ -43,7 +43,7 @@
       margin-top: 40px;
       padding: 20px;
       border-top: 1px solid #ddd;
-      font-size: 18px; /* ensure syllabus text is readable */
+      font-size: 18px;
     }
     .back-link {
       display: block;
@@ -67,31 +67,33 @@
     const repoName = "Lectures";
     const branch = "main";
 
-    // klasör adı -> görüntülenecek ad
-    const courses = {
-      "RTS%20Teknik%20Temeller": "RTS Teknik Temeller",
-      "Sanat%20Tarihi": "Sanat Tarihi",
-      "Gorsel%20Kultur": "Görsel Kültür"
-    };
+    // Repo klasör isimleri (Türkçe karakterlerle birlikte)
+    const courses = [
+      "RTS Teknik Temeller",
+      "Sanat Tarihi",
+      "Görsel Kültür",
+      "Sinema Felsefesi"
+    ];
 
     async function loadFileList() {
       const list = document.getElementById("file-list");
-      Object.entries(courses).forEach(([folder, displayName]) => {
+      courses.forEach(displayName => {
         const li = document.createElement("li");
         const link = document.createElement("a");
         link.href = "#";
         link.textContent = displayName;
         link.onclick = (e) => {
           e.preventDefault();
-          loadSyllabus(folder);
+          loadSyllabus(displayName);
         };
         li.appendChild(link);
         list.appendChild(li);
       });
     }
 
-    async function loadSyllabus(folder) {
-      const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folder}?ref=${branch}`;
+    async function loadSyllabus(folderName) {
+      const encodedFolder = encodeURIComponent(folderName);
+      const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFolder}?ref=${branch}`;
       const response = await fetch(apiUrl);
       const files = await response.json();
       const syllabusFile = files.find(f => f.name.toLowerCase() === "syllabus.md");
