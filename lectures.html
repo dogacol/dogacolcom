@@ -24,32 +24,45 @@
       text-align: center;
       font-size: 2.4em;
     }
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    li {
-      margin: 8px 0;
-    }
-    a {
-      text-decoration: none;
-      color: #000;
-      font-size: 1.3em;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
+    ul { list-style-type: none; padding: 0; }
+    li { margin: 8px 0; }
+    a { text-decoration: none; color: #000; font-size: 1.3em; }
+    a:hover { text-decoration: underline; }
+
     #syllabus {
       margin-top: 40px;
       padding: 20px;
       border-top: 1px solid #ddd;
       font-size: 18px;
     }
-    .back-link {
-      display: block;
-      margin-bottom: 20px;
-      font-size: 1.1em;
+
+    /* Markdown table styling */
+    #syllabus table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #ccc;
+      margin: 1rem 0;
     }
+    #syllabus thead th {
+      background: #f7f7f7;
+      font-weight: 700;
+      text-align: left;
+    }
+    #syllabus th,
+    #syllabus td {
+      border: 1px solid #ccc;
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+    #syllabus tbody tr:nth-child(even) { background: #fafafa; }
+
+    /* Horizontal scroll on small screens */
+    #syllabus .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .back-link { display: block; margin-bottom: 20px; font-size: 1.1em; }
   </style>
 </head>
 <body>
@@ -67,13 +80,15 @@
     const repoName = "Lectures";
     const branch = "main";
 
-    // Repo klasör isimleri (Türkçe karakterlerle birlikte)
     const courses = [
       "RTS Teknik Temeller",
       "Sanat Tarihi",
       "Görsel Kültür",
       "Sinema Felsefesi"
     ];
+
+    // Ensure GFM tables are parsed
+    marked.setOptions({ gfm: true, breaks: false });
 
     async function loadFileList() {
       const list = document.getElementById("file-list");
@@ -96,13 +111,17 @@
       const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFolder}?ref=${branch}`;
       const response = await fetch(apiUrl);
       const files = await response.json();
-      const syllabusFile = files.find(f => f.name.toLowerCase() === "syllabus.md");
+      const syllabusFile = Array.isArray(files) && files.find(f => f.name.toLowerCase() === "syllabus.md");
+
+      const target = document.getElementById("syllabus");
       if (syllabusFile) {
         const raw = await fetch(syllabusFile.download_url);
         const text = await raw.text();
-        document.getElementById("syllabus").innerHTML = marked.parse(text);
+        const html = marked.parse(text);
+        // Wrap in a scroll container to preserve layout on mobile
+        target.innerHTML = `<div class="table-wrap">${html}</div>`;
       } else {
-        document.getElementById("syllabus").innerHTML = "<p>Bu klasörde ders programı bulunamadı.</p>";
+        target.innerHTML = "<p>Bu klasörde ders programı bulunamadı.</p>";
       }
     }
 
