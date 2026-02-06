@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lectures – Doğa Çöl</title>
+  <title>Course Syllabi – Doğa Çöl</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -105,12 +105,12 @@
       <span class="tr-only">Anasayfa</span>
     </a>
     <h1>
-      <span class="en-only">Lecture Schedules</span>
-      <span class="tr-only">Ders Programları</span>
+      <span class="en-only">Course Syllabi</span>
+      <span class="tr-only">Ders İzlenceleri</span>
     </h1>
     <p>
-      <span class="en-only">Select a course to view its schedule:</span>
-      <span class="tr-only">Bir ders seçerek programı görüntüleyin:</span>
+      <span class="en-only">Select a course to view its syllabus:</span>
+      <span class="tr-only">Bir ders seçerek izlenceyi görüntüleyin:</span>
     </p>
     <ul id="file-list"></ul>
     <div id="syllabus"></div>
@@ -142,7 +142,7 @@
       localStorage.setItem('lang', lang);
       document.getElementById('lang-en').className = lang === 'en' ? 'active' : '';
       document.getElementById('lang-tr').className = lang === 'tr' ? 'active' : '';
-      document.title = lang === 'tr' ? 'Dersler – Doğa Çöl' : 'Lectures – Doğa Çöl';
+      document.title = lang === 'tr' ? 'Ders İzlenceleri – Doğa Çöl' : 'Course Syllabi – Doğa Çöl';
     }
 
     function loadFileList() {
@@ -183,8 +183,8 @@
         target.innerHTML = `<div class="table-wrap">${html}</div>`;
       } catch (error) {
         target.innerHTML = lang === 'tr'
-          ? "<p>Bu ders için program bulunamadı.</p>"
-          : "<p>No schedule found for this course.</p>";
+          ? "<p>Bu ders için izlence bulunamadı.</p>"
+          : "<p>No syllabus found for this course.</p>";
         console.error("Syllabus load error:", error);
       }
     }
