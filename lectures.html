@@ -85,14 +85,14 @@
       { title: "Ethics", file: "ethics.md" },
       { title: "Felsefeye Giriş", file: "felsefeyegiris.md" },
       { title: "Sanat Kuramları", file: "sanatkuramlari.md" }
-      "Etik",
-      "Ethics",
-      "Felsefeye Giriş",
-      "Sanat Kuramları"
     ];
 
-    // Ensure GFM tables are parsed
-    marked.setOptions({ gfm: true, breaks: false });
+    // Ensure GFM tables are parsed when marked is available
+    if (window.marked) {
+      marked.setOptions({ gfm: true, breaks: false });
+    } else {
+      console.warn("Marked not available; rendering markdown as plain text.");
+    }
 
     async function loadFileList() {
       const list = document.getElementById("file-list");
@@ -126,7 +126,7 @@
         const binary = atob(data.content.replace(/\n/g, ""));
         const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
         const text = new TextDecoder("utf-8").decode(bytes);
-        const html = marked.parse(text);
+        const html = window.marked ? marked.parse(text) : `<pre>${text}</pre>`;
         // Wrap in a scroll container to preserve layout on mobile
         target.innerHTML = `<div class="table-wrap">${html}</div>`;
       } catch (error) {
