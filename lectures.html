@@ -81,47 +81,57 @@
     const branch = "main";
 
     const courses = [
-      "RTS Teknik Temeller",
-      "Sanat Tarihi",
-      "Görsel Kültür",
-      "Sinema Felsefesi"
+      { title: "Etik", file: "etik.md" },
+      { title: "Ethics", file: "ethics.md" },
+      { title: "Felsefeye Giriş", file: "felsefeyegiris.md" },
+      { title: "Sanat Kuramları", file: "sanatkuramlari.md" }
     ];
 
-    // Ensure GFM tables are parsed
-    marked.setOptions({ gfm: true, breaks: false });
+    // Ensure GFM tables are parsed when marked is available
+    if (window.marked) {
+      marked.setOptions({ gfm: true, breaks: false });
+    } else {
+      console.warn("Marked not available; rendering markdown as plain text.");
+    }
 
     async function loadFileList() {
       const list = document.getElementById("file-list");
-      courses.forEach(displayName => {
+      courses.forEach(course => {
         const li = document.createElement("li");
         const link = document.createElement("a");
         link.href = "#";
-        link.textContent = displayName;
+        link.textContent = course.title;
         link.onclick = (e) => {
           e.preventDefault();
-          loadSyllabus(displayName);
+          loadSyllabus(course);
         };
         li.appendChild(link);
         list.appendChild(li);
       });
     }
 
-    async function loadSyllabus(folderName) {
-      const encodedFolder = encodeURIComponent(folderName);
-      const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFolder}?ref=${branch}`;
-      const response = await fetch(apiUrl);
-      const files = await response.json();
-      const syllabusFile = Array.isArray(files) && files.find(f => f.name.toLowerCase() === "syllabus.md");
-
+    async function loadSyllabus(course) {
       const target = document.getElementById("syllabus");
-      if (syllabusFile) {
-        const raw = await fetch(syllabusFile.download_url);
-        const text = await raw.text();
-        const html = marked.parse(text);
+      try {
+        const encodedFile = encodeURIComponent(course.file);
+        const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFile}?ref=${branch}`;
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        if (!data.content) {
+          throw new Error("Missing content");
+        }
+        const binary = atob(data.content.replace(/\n/g, ""));
+        const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+        const text = new TextDecoder("utf-8").decode(bytes);
+        const html = window.marked ? marked.parse(text) : `<pre>${text}</pre>`;
         // Wrap in a scroll container to preserve layout on mobile
         target.innerHTML = `<div class="table-wrap">${html}</div>`;
-      } else {
-        target.innerHTML = "<p>Bu klasörde ders programı bulunamadı.</p>";
+      } catch (error) {
+        target.innerHTML = "<p>Bu ders için program bulunamadı.</p>";
+        console.error("Syllabus load error:", error);
       }
     }
 
