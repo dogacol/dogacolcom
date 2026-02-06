@@ -183,8 +183,8 @@
         target.innerHTML = `<div class="table-wrap">${html}</div>`;
       } catch (error) {
         target.innerHTML = lang === 'tr'
-          ? "<p>Bu ders için program bulunamadı.</p>"
-          : "<p>No schedule found for this course.</p>";
+          ? "<p>Bu ders için izlence bulunamadı.</p>"
+          : "<p>No syllabus found for this course.</p>";
         console.error("Syllabus load error:", error);
       }
     }
