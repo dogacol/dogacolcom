@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="lang-en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -16,16 +16,16 @@
             line-height: 1.5;
         }
         .content {
-            max-width: 100%; /* Allow the content to fill the screen */
-            padding: 10px; /* Reduce padding for smaller screens */
+            max-width: 100%;
+            padding: 10px;
             text-align: left;
         }
         h1 {
-            font-size: 1.5em; /* Scales with screen size */
+            font-size: 1.5em;
             margin-bottom: 20px;
         }
         .file-link {
-            font-size: 1.3em; /* Slightly larger for better readability */
+            font-size: 1.3em;
             margin: 10px 0;
             cursor: pointer;
             color: #333;
@@ -35,25 +35,25 @@
             color: #000;
         }
         .file-content {
-            font-size: 1.2em; /* Scales with screen size */
+            font-size: 1.2em;
             color: #333;
             background-color: #fff;
-            padding: 10px; /* Reduce padding for smaller screens */
+            padding: 10px;
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin: 20px auto; /* Narrow the margins and center the container */
-            width: 60%; /* Make the container narrower relative to the window size */
-            max-width: 800px; /* Optional: Limit the maximum width */
-            display: none; /* Initially hidden */
-            line-height: 1.5; /* Ensures 1.5 line spacing */
+            margin: 20px auto;
+            width: 60%;
+            max-width: 800px;
+            display: none;
+            line-height: 1.5;
         }
 
         .file-content p {
-            text-align: justify; /* Justifies the text in paragraph elements */
+            text-align: justify;
         }
 
         .footer {
-            font-size: 0.9em; /* Slightly smaller to fit better on small screens */
+            font-size: 0.9em;
             color: #000000;
             text-align: center;
             padding: 10px 0;
@@ -61,36 +61,74 @@
             margin-top: 50px;
         }
         .back-button {
-            margin-bottom: 20px; /* Add space below the button */
-            text-align: center; /* Align the button to the left */
+            margin-bottom: 20px;
+            text-align: center;
         }
         .back-button button {
-            background-color: #333; /* Dark background color */
-            color: #fff; /* White text color */
-            padding: 10px 20px; /* Add padding */
-            font-size: 1em; /* Adjust font size */
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1em;
             border: none;
-            border-radius: 5px; /* Slightly rounded corners */
+            border-radius: 5px;
             cursor: pointer;
             text-align: center;
         }
         .back-button button:hover {
-            background-color: #555; /* Slightly lighter on hover */
+            background-color: #555;
         }
+
+        /* Language toggle */
+        .lang-toggle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1em;
+            text-align: right;
+            margin-bottom: 0;
+        }
+        .lang-toggle a {
+            text-decoration: none;
+            color: #000;
+            cursor: pointer;
+            padding: 2px 4px;
+        }
+        .lang-toggle a:hover {
+            text-decoration: underline;
+        }
+        .lang-toggle a.active {
+            font-weight: 700;
+        }
+        .lang-toggle .sep {
+            color: #999;
+        }
+
+        /* Language visibility */
+        html.lang-en .tr-only { display: none; }
+        html.lang-tr .en-only { display: none; }
     </style>
 </head>
 <body>
+    <div class="lang-toggle">
+        <a id="lang-en" onclick="setLang('en')">EN</a>
+        <span class="sep">/</span>
+        <a id="lang-tr" onclick="setLang('tr')">TR</a>
+    </div>
     <div class="content">
-        <h1>Academic Papers</h1>
+        <h1>
+            <span class="en-only">Academic Papers</span>
+            <span class="tr-only">Akademik Yazılar</span>
+        </h1>
         <div id="files"></div>
         <div id="file-content" class="file-content"></div>
     </div>
     <div class="back-button">
-        <button onclick="goToIndex()">&#8592; Back</button>
+        <button onclick="goToIndex()">
+            <span class="en-only">&#8592; Back</span>
+            <span class="tr-only">&#8592; Geri</span>
+        </button>
     </div>
 
     <div class="footer">
-        &copy; 2024 Doğa Çöl
+        &copy; 2026 Doğa Çöl
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
@@ -98,9 +136,21 @@
         const filesContainer = document.getElementById('files');
         const fileContentDiv = document.getElementById('file-content');
         const repoUrl = "https://api.github.com/repos/dogacol/Academic-Papers/contents";
-    
-        let fileCounter = 1; // Initialize the counter
-    
+
+        let fileCounter = 1;
+
+        function setLang(lang) {
+            document.documentElement.className = 'lang-' + lang;
+            document.documentElement.setAttribute('lang', lang === 'tr' ? 'tr' : 'en');
+            localStorage.setItem('lang', lang);
+            document.getElementById('lang-en').className = lang === 'en' ? 'active' : '';
+            document.getElementById('lang-tr').className = lang === 'tr' ? 'active' : '';
+            document.title = lang === 'tr' ? 'Akademik Yazılar - Doğa Çöl' : 'Academic Papers - Doğa Çöl';
+        }
+
+        // Load saved preference or default to English
+        setLang(localStorage.getItem('lang') || 'en');
+
         // Fetch list of files from the GitHub repository
         fetch(repoUrl)
             .then(response => response.json())
@@ -110,27 +160,23 @@
                         const fileLink = document.createElement('div');
                         fileLink.classList.add('file-link');
                         fileLink.id = file.name;
-                        fileLink.textContent = `${fileCounter}. ${file.name.replace(/-/g, ' ').replace('.md', '')}`; // Temporary name until the title is fetched
+                        fileLink.textContent = `${fileCounter}. ${file.name.replace(/-/g, ' ').replace('.md', '')}`;
                         fileLink.onclick = () => loadFileContent(file.name);
                         filesContainer.appendChild(fileLink);
-    
-                        // Fetch the file content to extract the title
+
                         fetchFileTitle(file.name, fileCounter);
-    
-                        fileCounter++; // Increment the counter for the next file
+                        fileCounter++;
                     }
                 });
             })
             .catch(error => console.error('Error fetching file list:', error));
-    
-        // Function to load and display the content of a .md file, or hide it if already open
+
         function loadFileContent(fileName) {
             const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
-    
-            // If the content is already visible, hide it
+
             if (fileContentDiv.dataset.currentFile === fileName) {
                 fileContentDiv.style.display = 'none';
-                fileContentDiv.dataset.currentFile = ''; // Reset current file
+                fileContentDiv.dataset.currentFile = '';
             } else {
                 fetch(fileUrl)
                     .then(response => response.text())
@@ -138,17 +184,16 @@
                         const converter = new showdown.Converter();
                         const htmlContent = converter.makeHtml(markdown);
                         fileContentDiv.innerHTML = htmlContent;
-                        fileContentDiv.style.display = 'block'; // Show the content
-                        fileContentDiv.dataset.currentFile = fileName; // Store the current file
+                        fileContentDiv.style.display = 'block';
+                        fileContentDiv.dataset.currentFile = fileName;
                     })
                     .catch(error => console.error('Error fetching file content:', error));
             }
         }
-    
-        // Function to fetch and extract the title from a .md file
+
         function fetchFileTitle(fileName, fileCounter) {
             const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
-    
+
             fetch(fileUrl)
                 .then(response => response.text())
                 .then(markdown => {
@@ -163,6 +208,6 @@
             window.location.href = 'index.html';
         }
     </script>
-    
+
 </body>
 </html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="en">
+<html lang="en" class="lang-en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Doga Col</title>
+  <title>Doğa Çöl</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" href="images\website images\favicon.ico" type="image/x-icon">
   <style type="text/css">
@@ -17,22 +17,22 @@
       flex-direction: column;
       background-color: #f0f0f0;
       font-family: 'Cormorant Garamond', serif;
-      align-items: center; /* Center all content horizontally */
-      justify-content: center; /* Center all content vertically */
+      align-items: center;
+      justify-content: center;
       line-height: 1.5;
     }
     .content {
-      max-width: 100%; /* Allow the content to fill the screen */
-      padding: 10px; /* Reduce padding for smaller screens */
+      max-width: 100%;
+      padding: 10px;
       text-align: center;
     }
     .title {
-      font-size: 2em; /* Adjust for mobile screens */
+      font-size: 2em;
       color: #000000;
       margin-bottom: 20px;
     }
     .subtitle {
-      font-size: 1.2em; /* Adjust for mobile screens */
+      font-size: 1.2em;
       color: #000000;
       margin-top: -10px;
       margin-bottom: 30px;
@@ -42,17 +42,17 @@
       margin-bottom: 20px;
     }
     .section h1 {
-      font-size: 1.5em; /* Adjust for mobile screens */
+      font-size: 1.5em;
       color: #000000;
       margin-left: 0;
     }
     .links {
-      margin-left: 10px; /* Indent the links slightly */
-      text-align: left; /* Ensure links are left-aligned */
+      margin-left: 10px;
+      text-align: left;
     }
     .links a {
       display: block;
-      font-size: 1.2em; /* Adjust for mobile screens */
+      font-size: 1.2em;
       color: #000000;
       text-decoration: none;
       margin: 5px 0;
@@ -61,30 +61,77 @@
       text-decoration: underline;
     }
     .footer {
-      font-size: 0.9em; /* Slightly smaller to fit better on small screens */
+      font-size: 0.9em;
       color: #000000;
       text-align: center;
       padding: 10px 0;
       background-color: #f0f0f0;
       margin-top: auto;
     }
+
+    /* Language toggle */
+    .lang-toggle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .lang-toggle a {
+      text-decoration: none;
+      color: #000;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+    .lang-toggle a:hover {
+      text-decoration: underline;
+    }
+    .lang-toggle a.active {
+      font-weight: 700;
+    }
+    .lang-toggle .sep {
+      color: #999;
+    }
+
+    /* Language visibility */
+    html.lang-en .tr-only { display: none; }
+    html.lang-tr .en-only { display: none; }
   </style>
 </head>
 <body>
   <div class="content">
+    <div class="lang-toggle">
+      <a id="lang-en" onclick="setLang('en')">EN</a>
+      <span class="sep">/</span>
+      <a id="lang-tr" onclick="setLang('tr')">TR</a>
+    </div>
     <p class="title">Doğa Çöl</p>
-    <p class="subtitle">Words, images, and sounds / Sözcükler, imgeler, sesler</p>
-    
+    <p class="subtitle">
+      <span class="en-only">Words, images, and sounds</span>
+      <span class="tr-only">Sözcükler, imgeler, sesler</span>
+    </p>
+
     <div class="section">
-      <h1>Words / Sözcükler</h1>
+      <h1>
+        <span class="en-only">Words</span>
+        <span class="tr-only">Sözcükler</span>
+      </h1>
       <div class="links">
-        <a href="academic.html">Academic Writing / Akademik Yazılar</a>
-        <a href="lectures.html">Lectures / Dersler</a>
+        <a href="academic.html">
+          <span class="en-only">Academic Writing</span>
+          <span class="tr-only">Akademik Yazılar</span>
+        </a>
+        <a href="lectures.html">
+          <span class="en-only">Lectures</span>
+          <span class="tr-only">Dersler</span>
+        </a>
       </div>
     </div>
-    
+
     <div class="section">
-      <h1>Images and Sounds / İmgeler ve Sesler</h1>
+      <h1>
+        <span class="en-only">Images and Sounds</span>
+        <span class="tr-only">İmgeler ve Sesler</span>
+      </h1>
       <div class="links">
         <a href="https://dogacol.bandcamp.com" target="_blank">Bandcamp</a>
         <a href="https://vimeo.com/dogacol" target="_blank">Vimeo</a>
@@ -92,11 +139,26 @@
       </div>
     </div>
   </div>
-  
+
   <div class="footer">
-    <a href="mailto:dogacol@gmail.com" target="_blank">Contact / İletişim</a>
+    <a href="mailto:dogacol@gmail.com" target="_blank">
+      <span class="en-only">Contact</span>
+      <span class="tr-only">İletişim</span>
+    </a>
     <br>
     <a>&copy; 2026 Doğa Çöl</a>
   </div>
+
+  <script>
+    function setLang(lang) {
+      document.documentElement.className = 'lang-' + lang;
+      document.documentElement.setAttribute('lang', lang === 'tr' ? 'tr' : 'en');
+      localStorage.setItem('lang', lang);
+      document.getElementById('lang-en').className = lang === 'en' ? 'active' : '';
+      document.getElementById('lang-tr').className = lang === 'tr' ? 'active' : '';
+    }
+    // Load saved preference or default to English
+    setLang(localStorage.getItem('lang') || 'en');
+  </script>
 </body>
 </html>

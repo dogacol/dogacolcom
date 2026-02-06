@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en" class="lang-en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dersler – Doğa Çöl</title>
+  <title>Lectures – Doğa Çöl</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -63,13 +63,55 @@
     }
 
     .back-link { display: block; margin-bottom: 20px; font-size: 1.1em; }
+
+    /* Language toggle */
+    .lang-toggle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1em;
+      text-align: right;
+      margin-bottom: 0;
+    }
+    .lang-toggle a {
+      text-decoration: none;
+      color: #000;
+      cursor: pointer;
+      padding: 2px 4px;
+      font-size: 1em;
+    }
+    .lang-toggle a:hover {
+      text-decoration: underline;
+    }
+    .lang-toggle a.active {
+      font-weight: 700;
+    }
+    .lang-toggle .sep {
+      color: #999;
+    }
+
+    /* Language visibility */
+    html.lang-en .tr-only { display: none; }
+    html.lang-tr .en-only { display: none; }
   </style>
 </head>
 <body>
   <div class="container">
-    <a href="index.html" class="back-link">Home / Anasayfa</a>
-    <h1>Ders Programları</h1>
-    <p>Bir ders seçerek programı görüntüleyin:</p>
+    <div class="lang-toggle">
+      <a id="lang-en" onclick="setLang('en')">EN</a>
+      <span class="sep">/</span>
+      <a id="lang-tr" onclick="setLang('tr')">TR</a>
+    </div>
+    <a href="index.html" class="back-link">
+      <span class="en-only">Home</span>
+      <span class="tr-only">Anasayfa</span>
+    </a>
+    <h1>
+      <span class="en-only">Lecture Schedules</span>
+      <span class="tr-only">Ders Programları</span>
+    </h1>
+    <p>
+      <span class="en-only">Select a course to view its schedule:</span>
+      <span class="tr-only">Bir ders seçerek programı görüntüleyin:</span>
+    </p>
     <ul id="file-list"></ul>
     <div id="syllabus"></div>
   </div>
@@ -94,7 +136,16 @@
       console.warn("Marked not available; rendering markdown as plain text.");
     }
 
-    async function loadFileList() {
+    function setLang(lang) {
+      document.documentElement.className = 'lang-' + lang;
+      document.documentElement.setAttribute('lang', lang === 'tr' ? 'tr' : 'en');
+      localStorage.setItem('lang', lang);
+      document.getElementById('lang-en').className = lang === 'en' ? 'active' : '';
+      document.getElementById('lang-tr').className = lang === 'tr' ? 'active' : '';
+      document.title = lang === 'tr' ? 'Dersler – Doğa Çöl' : 'Lectures – Doğa Çöl';
+    }
+
+    function loadFileList() {
       const list = document.getElementById("file-list");
       courses.forEach(course => {
         const li = document.createElement("li");
@@ -112,6 +163,7 @@
 
     async function loadSyllabus(course) {
       const target = document.getElementById("syllabus");
+      const lang = localStorage.getItem('lang') || 'en';
       try {
         const encodedFile = encodeURIComponent(course.file);
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFile}?ref=${branch}`;
@@ -130,12 +182,16 @@
         // Wrap in a scroll container to preserve layout on mobile
         target.innerHTML = `<div class="table-wrap">${html}</div>`;
       } catch (error) {
-        target.innerHTML = "<p>Bu ders için program bulunamadı.</p>";
+        target.innerHTML = lang === 'tr'
+          ? "<p>Bu ders için program bulunamadı.</p>"
+          : "<p>No schedule found for this course.</p>";
         console.error("Syllabus load error:", error);
       }
     }
 
     loadFileList();
+    // Load saved preference or default to English
+    setLang(localStorage.getItem('lang') || 'en');
   </script>
 </body>
 </html>
