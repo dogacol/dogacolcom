@@ -123,10 +123,10 @@
     const branch = "main";
 
     const courses = [
-      { title: "Etik", file: "etik.md", lang: "tr" },
-      { title: "Ethics", file: "ethics.md", lang: "en" },
-      { title: "Felsefeye Giriş", file: "felsefeyegiris.md", lang: "tr" },
-      { title: "Sanat Kuramları", file: "sanatkuramlari.md", lang: "tr" }
+      { title: "Etik", file: "etik.md" },
+      { title: "Ethics", file: "ethics.md" },
+      { title: "Felsefeye Giriş", file: "felsefeyegiris.md" },
+      { title: "Sanat Kuramları", file: "sanatkuramlari.md" }
     ];
 
     // Ensure GFM tables are parsed when marked is available
@@ -143,24 +143,12 @@
       document.getElementById('lang-en').className = lang === 'en' ? 'active' : '';
       document.getElementById('lang-tr').className = lang === 'tr' ? 'active' : '';
       document.title = lang === 'tr' ? 'Dersler – Doğa Çöl' : 'Lectures – Doğa Çöl';
-      filterCourses(lang);
-    }
-
-    function filterCourses(lang) {
-      const items = document.querySelectorAll('#file-list li');
-      items.forEach(li => {
-        const courseLang = li.getAttribute('data-lang');
-        li.style.display = (courseLang === lang) ? '' : 'none';
-      });
-      // Clear syllabus when switching language
-      document.getElementById('syllabus').innerHTML = '';
     }
 
     function loadFileList() {
       const list = document.getElementById("file-list");
       courses.forEach(course => {
         const li = document.createElement("li");
-        li.setAttribute('data-lang', course.lang);
         const link = document.createElement("a");
         link.href = "#";
         link.textContent = course.title;
