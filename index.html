@@ -2,10 +2,11 @@
 <html lang="en" class="lang-en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Doğa Çöl — academic writing, lectures, film, and sound.">
   <title>Doğa Çöl</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="images\website images\favicon.ico" type="image/x-icon">
+  <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
   <style type="text/css">
     html, body {
       height: 100%;
@@ -76,16 +77,20 @@
       margin-bottom: 10px;
       text-align: center;
     }
-    .lang-toggle a {
+    .lang-toggle button {
+      font-family: inherit;
+      font-size: inherit;
       text-decoration: none;
       color: #000;
       cursor: pointer;
       padding: 2px 4px;
+      background: none;
+      border: none;
     }
-    .lang-toggle a:hover {
+    .lang-toggle button:hover {
       text-decoration: underline;
     }
-    .lang-toggle a.active {
+    .lang-toggle button.active {
       font-weight: 700;
     }
     .lang-toggle .sep {
@@ -100,9 +105,9 @@
 <body>
   <div class="content">
     <div class="lang-toggle">
-      <a id="lang-en" onclick="setLang('en')">EN</a>
+      <button id="lang-en" onclick="setLang('en')">EN</button>
       <span class="sep">/</span>
-      <a id="lang-tr" onclick="setLang('tr')">TR</a>
+      <button id="lang-tr" onclick="setLang('tr')">TR</button>
     </div>
     <p class="title">Doğa Çöl</p>
     <p class="subtitle">

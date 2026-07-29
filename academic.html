@@ -2,7 +2,8 @@
 <html lang="en" class="lang-en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Academic papers and publications by Doğa Çöl.">
     <title>Academic Papers - Doğa Çöl</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
@@ -85,16 +86,20 @@
             text-align: right;
             margin-bottom: 0;
         }
-        .lang-toggle a {
+        .lang-toggle button {
+            font-family: inherit;
+            font-size: inherit;
             text-decoration: none;
             color: #000;
             cursor: pointer;
             padding: 2px 4px;
+            background: none;
+            border: none;
         }
-        .lang-toggle a:hover {
+        .lang-toggle button:hover {
             text-decoration: underline;
         }
-        .lang-toggle a.active {
+        .lang-toggle button.active {
             font-weight: 700;
         }
         .lang-toggle .sep {
@@ -108,9 +113,9 @@
 </head>
 <body>
     <div class="lang-toggle">
-        <a id="lang-en" onclick="setLang('en')">EN</a>
+        <button id="lang-en" onclick="setLang('en')">EN</button>
         <span class="sep">/</span>
-        <a id="lang-tr" onclick="setLang('tr')">TR</a>
+        <button id="lang-tr" onclick="setLang('tr')">TR</button>
     </div>
     <div class="content">
         <h1>
@@ -152,15 +157,20 @@
         setLang(localStorage.getItem('lang') || 'en');
 
         // Fetch list of files from the GitHub repository
+        filesContainer.textContent = document.documentElement.className === 'lang-tr' ? 'Yükleniyor…' : 'Loading…';
         fetch(repoUrl)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
             .then(data => {
+                filesContainer.textContent = '';
                 data.forEach(file => {
                     if (file.name.endsWith('.md')) {
                         const fileLink = document.createElement('div');
                         fileLink.classList.add('file-link');
                         fileLink.id = file.name;
-                        fileLink.textContent = `${fileCounter}. ${file.name.replace(/-/g, ' ').replace('.md', '')}`;
+                        fileLink.textContent = `${fileCounter}. ${file.name.replace(/\.md$/, '')}`;
                         fileLink.onclick = () => loadFileContent(file.name);
                         filesContainer.appendChild(fileLink);
 
@@ -169,7 +179,12 @@
                     }
                 });
             })
-            .catch(error => console.error('Error fetching file list:', error));
+            .catch(error => {
+                console.error('Error fetching file list:', error);
+                filesContainer.textContent = document.documentElement.className === 'lang-tr'
+                    ? 'Yazı listesi yüklenemedi. Lütfen daha sonra tekrar deneyin.'
+                    : 'Could not load the paper list. Please try again later.';
+            });
 
         function loadFileContent(fileName) {
             const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
@@ -198,7 +213,7 @@
                 .then(response => response.text())
                 .then(markdown => {
                     const titleMatch = markdown.match(/^\s*---\s*title:\s*["'](.+?)["']\s*---/ims);
-                    const title = titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' ').replace('.md', '');
+                    const title = titleMatch ? titleMatch[1] : fileName.replace(/\.md$/, '');
                     document.getElementById(fileName).textContent = `${fileCounter}. ${title}`;
                 })
                 .catch(error => console.error('Error fetching file title:', error));

@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Course syllabi and lectures by Doğa Çöl.">
   <title>Lectures – Doğa Çöl</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
   <style>
     body {
       font-family: 'Cormorant Garamond', serif;
@@ -71,17 +73,20 @@
       text-align: right;
       margin-bottom: 0;
     }
-    .lang-toggle a {
+    .lang-toggle button {
+      font-family: inherit;
       text-decoration: none;
       color: #000;
       cursor: pointer;
       padding: 2px 4px;
       font-size: 1em;
+      background: none;
+      border: none;
     }
-    .lang-toggle a:hover {
+    .lang-toggle button:hover {
       text-decoration: underline;
     }
-    .lang-toggle a.active {
+    .lang-toggle button.active {
       font-weight: 700;
     }
     .lang-toggle .sep {
@@ -96,9 +101,9 @@
 <body>
   <div class="container">
     <div class="lang-toggle">
-      <a id="lang-en" onclick="setLang('en')">EN</a>
+      <button id="lang-en" onclick="setLang('en')">EN</button>
       <span class="sep">/</span>
-      <a id="lang-tr" onclick="setLang('tr')">TR</a>
+      <button id="lang-tr" onclick="setLang('tr')">TR</button>
     </div>
     <a href="index.html" class="back-link">
       <span class="en-only">Home</span>
