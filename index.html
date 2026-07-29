@@ -2,10 +2,12 @@
 <html lang="en" class="lang-en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Doğa Çöl — academic writing, lectures, film, and sound.">
   <title>Doğa Çöl</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="images\website images\favicon.ico" type="image/x-icon">
+  <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
   <style type="text/css">
     html, body {
       height: 100%;
@@ -61,48 +63,21 @@
       text-decoration: underline;
     }
     .footer {
-      font-size: 0.9em;
-      color: #000000;
-      text-align: center;
-      padding: 10px 0;
-      background-color: #f0f0f0;
       margin-top: auto;
     }
 
-    /* Language toggle */
+    /* index.html centers its language toggle; style.css defaults to right */
     .lang-toggle {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1em;
-      margin-bottom: 10px;
       text-align: center;
     }
-    .lang-toggle a {
-      text-decoration: none;
-      color: #000;
-      cursor: pointer;
-      padding: 2px 4px;
-    }
-    .lang-toggle a:hover {
-      text-decoration: underline;
-    }
-    .lang-toggle a.active {
-      font-weight: 700;
-    }
-    .lang-toggle .sep {
-      color: #999;
-    }
-
-    /* Language visibility */
-    html.lang-en .tr-only { display: none; }
-    html.lang-tr .en-only { display: none; }
   </style>
 </head>
 <body>
   <div class="content">
     <div class="lang-toggle">
-      <a id="lang-en" onclick="setLang('en')">EN</a>
+      <button id="lang-en" onclick="setLang('en')">EN</button>
       <span class="sep">/</span>
-      <a id="lang-tr" onclick="setLang('tr')">TR</a>
+      <button id="lang-tr" onclick="setLang('tr')">TR</button>
     </div>
     <p class="title">Doğa Çöl</p>
     <p class="subtitle">
@@ -146,7 +121,7 @@
       <span class="tr-only">İletişim</span>
     </a>
     <br>
-    <a>&copy; 2026 Doğa Çöl</a>
+    <a>&copy; Doğa Çöl</a>
   </div>
 
   <script>
