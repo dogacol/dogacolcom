@@ -7,6 +7,7 @@
     <title>Academic Papers - Doğa Çöl</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="images/website images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: 'Cormorant Garamond', serif;
@@ -54,11 +55,6 @@
         }
 
         .footer {
-            font-size: 0.9em;
-            color: #000000;
-            text-align: center;
-            padding: 10px 0;
-            background-color: #f0f0f0;
             margin-top: 50px;
         }
         .back-button {
@@ -78,37 +74,6 @@
         .back-button button:hover {
             background-color: #555;
         }
-
-        /* Language toggle */
-        .lang-toggle {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1em;
-            text-align: right;
-            margin-bottom: 0;
-        }
-        .lang-toggle button {
-            font-family: inherit;
-            font-size: inherit;
-            text-decoration: none;
-            color: #000;
-            cursor: pointer;
-            padding: 2px 4px;
-            background: none;
-            border: none;
-        }
-        .lang-toggle button:hover {
-            text-decoration: underline;
-        }
-        .lang-toggle button.active {
-            font-weight: 700;
-        }
-        .lang-toggle .sep {
-            color: #999;
-        }
-
-        /* Language visibility */
-        html.lang-en .tr-only { display: none; }
-        html.lang-tr .en-only { display: none; }
     </style>
 </head>
 <body>
@@ -133,7 +98,7 @@
     </div>
 
     <div class="footer">
-        &copy; 2026 Doğa Çöl
+        &copy; Doğa Çöl
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
@@ -141,8 +106,6 @@
         const filesContainer = document.getElementById('files');
         const fileContentDiv = document.getElementById('file-content');
         const repoUrl = "https://api.github.com/repos/dogacol/Academic-Papers/contents";
-
-        let fileCounter = 1;
 
         function setLang(lang) {
             document.documentElement.className = 'lang-' + lang;
@@ -156,27 +119,58 @@
         // Load saved preference or default to English
         setLang(localStorage.getItem('lang') || 'en');
 
-        // Fetch list of files from the GitHub repository
+        // Raw markdown for each paper, keyed by file name, so loadFileContent
+        // doesn't need to re-fetch what the list step already downloaded.
+        const contentCache = {};
+
+        // Splits a leading "---\ntitle: "..."\nyear: NNNN\n---" block (if any)
+        // off the markdown and returns { title, year, body }.
+        function parseFrontmatter(markdown) {
+            const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+            if (!match) return { title: null, year: null, body: markdown };
+            const block = match[1];
+            const titleMatch = block.match(/^title:\s*["'](.+?)["']\s*$/m);
+            const yearMatch = block.match(/^year:\s*(\d{4})\s*$/m);
+            return {
+                title: titleMatch ? titleMatch[1] : null,
+                year: yearMatch ? parseInt(yearMatch[1], 10) : null,
+                body: markdown.slice(match[0].length)
+            };
+        }
+
+        // Fetch the file list, then each paper's raw markdown, so papers can
+        // be sorted by year (newest first) before anything is rendered.
         filesContainer.textContent = document.documentElement.className === 'lang-tr' ? 'Yükleniyor…' : 'Loading…';
         fetch(repoUrl)
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response.json();
             })
-            .then(data => {
+            .then(data => data.filter(file => file.name.endsWith('.md')))
+            .then(mdFiles => Promise.all(mdFiles.map(file => {
+                const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${encodeURIComponent(file.name)}`;
+                return fetch(fileUrl)
+                    .then(response => response.text())
+                    .then(markdown => {
+                        contentCache[file.name] = markdown;
+                        const { title, year } = parseFrontmatter(markdown);
+                        return {
+                            name: file.name,
+                            title: title || file.name.replace(/\.md$/, ''),
+                            year
+                        };
+                    });
+            })))
+            .then(papers => {
+                papers.sort((a, b) => (b.year || 0) - (a.year || 0));
                 filesContainer.textContent = '';
-                data.forEach(file => {
-                    if (file.name.endsWith('.md')) {
-                        const fileLink = document.createElement('div');
-                        fileLink.classList.add('file-link');
-                        fileLink.id = file.name;
-                        fileLink.textContent = `${fileCounter}. ${file.name.replace(/\.md$/, '')}`;
-                        fileLink.onclick = () => loadFileContent(file.name);
-                        filesContainer.appendChild(fileLink);
-
-                        fetchFileTitle(file.name, fileCounter);
-                        fileCounter++;
-                    }
+                papers.forEach((paper, index) => {
+                    const fileLink = document.createElement('div');
+                    fileLink.classList.add('file-link');
+                    const label = paper.year ? `${paper.title} (${paper.year})` : paper.title;
+                    fileLink.textContent = `${index + 1}. ${label}`;
+                    fileLink.onclick = () => loadFileContent(paper.name);
+                    filesContainer.appendChild(fileLink);
                 });
             })
             .catch(error => {
@@ -187,36 +181,30 @@
             });
 
         function loadFileContent(fileName) {
-            const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
-
             if (fileContentDiv.dataset.currentFile === fileName) {
                 fileContentDiv.style.display = 'none';
                 fileContentDiv.dataset.currentFile = '';
-            } else {
-                fetch(fileUrl)
-                    .then(response => response.text())
-                    .then(markdown => {
-                        const converter = new showdown.Converter();
-                        const htmlContent = converter.makeHtml(markdown);
-                        fileContentDiv.innerHTML = htmlContent;
-                        fileContentDiv.style.display = 'block';
-                        fileContentDiv.dataset.currentFile = fileName;
-                    })
-                    .catch(error => console.error('Error fetching file content:', error));
+                return;
             }
-        }
 
-        function fetchFileTitle(fileName, fileCounter) {
-            const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${fileName}`;
+            const render = markdown => {
+                const { body } = parseFrontmatter(markdown);
+                const converter = new showdown.Converter();
+                fileContentDiv.innerHTML = converter.makeHtml(body);
+                fileContentDiv.style.display = 'block';
+                fileContentDiv.dataset.currentFile = fileName;
+            };
 
+            if (contentCache[fileName]) {
+                render(contentCache[fileName]);
+                return;
+            }
+
+            const fileUrl = `https://raw.githubusercontent.com/dogacol/Academic-Papers/main/${encodeURIComponent(fileName)}`;
             fetch(fileUrl)
                 .then(response => response.text())
-                .then(markdown => {
-                    const titleMatch = markdown.match(/^\s*---\s*title:\s*["'](.+?)["']\s*---/ims);
-                    const title = titleMatch ? titleMatch[1] : fileName.replace(/\.md$/, '');
-                    document.getElementById(fileName).textContent = `${fileCounter}. ${title}`;
-                })
-                .catch(error => console.error('Error fetching file title:', error));
+                .then(render)
+                .catch(error => console.error('Error fetching file content:', error));
         }
 
         function goToIndex() {
